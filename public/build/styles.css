@@ -1,0 +1,159 @@
+@import url("https://fonts.googleapis.com/css2?family=Anton&display=swap");
+:root {
+  --primary-color: purple;
+  --secondary-color: white;
+  --background-color: hotpink;
+}
+
+@-webkit-keyframes next-page-anim {
+  0% {
+    -webkit-transform: rotateZ(0);
+            transform: rotateZ(0);
+    left: 0;
+  }
+  100% {
+    -webkit-transform: rotateZ(360deg);
+            transform: rotateZ(360deg);
+    left: 100%;
+  }
+}
+
+@keyframes next-page-anim {
+  0% {
+    -webkit-transform: rotateZ(0);
+            transform: rotateZ(0);
+    left: 0;
+  }
+  100% {
+    -webkit-transform: rotateZ(360deg);
+            transform: rotateZ(360deg);
+    left: 100%;
+  }
+}
+
+.next-page {
+  -webkit-animation: next-page-anim 1s;
+          animation: next-page-anim 1s;
+}
+
+body {
+  font-family: "Anton", sans-serif;
+  text-transform: uppercase;
+  margin: 0;
+  padding: 0;
+  background-color: hotpink;
+}
+
+.content {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.content .title {
+  border: purple 2px solid;
+  border-radius: 10px;
+  padding: 5px 10px;
+  background: white;
+  background: -webkit-gradient(linear, left top, right top, color-stop(50%, white), color-stop(50%, #5a007d));
+  background: linear-gradient(90deg, white 50%, #5a007d 50%);
+}
+
+.content .title h1 {
+  font-size: 100px;
+  margin: 0;
+  background: -webkit-gradient(linear, left top, right top, color-stop(52%, #5a007d), color-stop(51%, white));
+  background: linear-gradient(90deg, #5a007d 52%, white 51%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.content.game .title h1 {
+  font-size: 30px;
+}
+
+.content.homepage .dashboard {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.content.homepage .dashboard .login-section,
+.content.homepage .dashboard .info-section {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  background: white;
+  border-radius: 10px;
+  height: 100%;
+  width: 500px;
+  color: var(--primary-color);
+}
+
+.content.homepage .dashboard .login-section .login,
+.content.homepage .dashboard .info-section .login {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  font-size: larger;
+}
+
+.content.homepage .dashboard .login-section .login input,
+.content.homepage .dashboard .info-section .login input {
+  width: 50%;
+}
+
+.content.homepage .dashboard .login-section .login label,
+.content.homepage .dashboard .info-section .login label {
+  margin: 0;
+}
+
+.mbtn {
+  text-transform: uppercase;
+  margin: 3px;
+  background-color: var(--primary-color);
+  border: var(--primary-color) 2px solid;
+  border-radius: 5px;
+  color: var(--secondary-color);
+}
+
+.mbtn:hover {
+  opacity: 0.8;
+}
+/*# sourceMappingURL=styles.css.map */

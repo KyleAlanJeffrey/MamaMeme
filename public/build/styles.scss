@@ -1,0 +1,113 @@
+@import url("https://fonts.googleapis.com/css2?family=Anton&display=swap");
+// font-family: 'Anton', sans-serif;
+:root {
+    --primary-color: purple;
+    --secondary-color: white;
+    --background-color: hotpink;
+}
+
+
+// ?Animations
+@keyframes next-page-anim{
+    0%{
+        transform: rotateZ(0);
+        left: 0;
+    }
+    100%{
+        transform: rotateZ(360deg);
+        left: 100%;
+    }
+}
+.next-page{
+    animation: next-page-anim 1s;
+}
+// 
+
+
+body {
+    font-family: "Anton", sans-serif;
+    text-transform: uppercase;
+    margin: 0;
+    padding: 0;
+    background-color: hotpink;
+}
+
+.content {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    & .title {
+        border: purple 2px solid;
+        border-radius: 10px;
+        padding: 5px 10px;
+        background: rgb(255, 255, 255);
+        background: linear-gradient(90deg, rgba(255, 255, 255, 1) 50%, rgba(90, 0, 125, 1) 50%);
+
+        & h1 {
+            font-size: 100px;
+            margin: 0;
+            background: linear-gradient(90deg, rgba(90, 0, 125, 1) 52%, rgba(255, 255, 255, 1) 51%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+    }
+
+    &.game {
+        & .title h1 {
+            font-size: 30px;
+        }
+    }
+
+    &.homepage {
+        & .dashboard {
+            // height: 500px;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            & .login-section,
+            & .info-section {
+                display: flex;
+                flex-direction: column;
+                background: white;
+                border-radius: 10px;
+                height: 100%;
+                width: 500px;
+                color: var(--primary-color);
+
+                & .login {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: larger;
+                    & input {
+                        width: 50%;
+                    }
+                    & label {
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Buttons
+.mbtn {
+    text-transform: uppercase;
+    margin: 3px;
+    background-color: var(--primary-color);
+    border: var(--primary-color) 2px solid;
+    border-radius: 5px;
+    color: var(--secondary-color);
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
