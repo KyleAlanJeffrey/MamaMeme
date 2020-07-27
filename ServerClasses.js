@@ -7,8 +7,13 @@ class Room {
         this.players = new PlayersArray();
     }
     addPlayer(username, ip) {
-        this.players.addPlayer(username, ip);
-        if(this.players.length == ROOM_SIZE) this.full = true;
+        let player = this.players.addPlayer(username, ip);
+        if (this.players.length == ROOM_SIZE) this.full = true;
+        if (this.players.length == 1) player.lead = true;
+        return player;
+    }
+    getPlayers() {
+        return this.players.playerList;
     }
     static createID() {
         let A = 65;
@@ -39,14 +44,15 @@ class RoomsArray {
         if (room == undefined) room = false;
         return room;
     }
-    addRoom() {
+    addRoom(privateRoom) {
         // Generate unique room code and check if it's unique
         let id = Room.createID();
         while (this.getRoomByID(id)) {
             id = Room.createID();
         }
-        let room = new Room(id);
+        let room = new Room(id, privateRoom);
         this.roomList.push(room);
+        console.log(`--------Creating new room for Ext ${id}-------- `);
         return room;
     }
     findOpenRoom() {
@@ -67,6 +73,7 @@ class Player {
     constructor(name, ip) {
         this.username = name;
         this.ip = ip;
+        this.lead = false;
     }
 }
 class PlayersArray {
@@ -79,9 +86,24 @@ class PlayersArray {
             return player.ip == ip;
         })
     }
+    findByName(name) {
+        let player = this.playerList.find((player) => {
+            return player.username == name;
+        });
+        if (player == undefined) player = false;
+        return player;
+    }
     addPlayer(name, ip) {
-        this.playerList.push(new Player(name, ip));
+        let player = new Player(name, ip);
+        this.playerList.push(player);
         this.length++;
+        return player;
+    }
+    removePlayer(name) {
+        this.playerList = this.playerList.filter((player) => {
+            return player.username != name;
+        });
+        this.length--;
     }
 }
 

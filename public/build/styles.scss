@@ -1,35 +1,176 @@
 @import url("https://fonts.googleapis.com/css2?family=Anton&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;500&display=swap");
+// font-family: 'Oswald', sans-serif;
 // font-family: 'Anton', sans-serif;
 :root {
     --primary-color: purple;
     --secondary-color: white;
     --background-color: hotpink;
+    --page-content-offset: 0;
 }
 
-
 // ?Animations
-@keyframes next-page-anim{
-    0%{
+@keyframes slide-up-anim {
+    0% {
+        top: 100;
+    }
+    75%{
+        top: -30
+    }
+    100% {
+        top: 0;
+    }
+}
+@keyframes next-page-anim {
+    0% {
         transform: rotateZ(0);
         left: 0;
     }
-    100%{
+    100% {
         transform: rotateZ(360deg);
         left: 100%;
     }
 }
-.next-page{
+@keyframes new-page-anim {
+    0% {
+        transform: rotateZ(0);
+        left: -100%;
+    }
+    100% {
+        transform: rotateZ(360deg);
+        left: var(--page-content-offset);
+    }
+}
+.slide-up{
+    animation: slide-up-anim 1s;
+}
+.next-page {
     animation: next-page-anim 1s;
 }
-// 
+.new-page {
+    animation: new-page-anim 1s;
 
+}
+
+// Custom attribute classes
+.hide-overflow{
+    overflow: hidden;
+}
+.hidden{
+    opacity: 0;
+}
 
 body {
     font-family: "Anton", sans-serif;
     text-transform: uppercase;
     margin: 0;
     padding: 0;
-    background-color: hotpink;
+    background-color: rgba(255, 105, 180, 0.527);
+}
+
+.title {
+    border: purple 2px solid;
+    border-radius: 10px;
+    padding: 5px 10px;
+    background: rgb(255, 255, 255);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 1) 50%, rgba(90, 0, 125, 1) 50%);
+
+    h1 {
+        font-size: 50px;
+        margin: 0;
+        background: linear-gradient(90deg, rgba(90, 0, 125, 1) 52%, rgba(255, 255, 255, 1) 51%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+    }
+}
+
+.game-content {
+    position: absolute;
+    top: 100px;
+    height: 700px;
+    width: 1700px;
+    padding: 20px;
+    background: linear-gradient(90deg, rgba(90, 0, 125, 1) 50%, rgba(255, 255, 255, 1) 50%);
+    border-radius: 10px;
+
+    & .title {
+        width: 180px;
+        & h1 {
+            font-size: 30px;
+        }
+    }
+    & .game-display {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        width: 100%;
+        flex-shrink: 0;
+        & .meme-format-container {
+            margin: 15px;
+            padding-right: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 45%;
+        }
+        & .meme-answer-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            width: 45%;
+        }
+    }
+}
+.players {
+    position: fixed;
+    top: 95%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+
+    & .player {
+        transition: flex 1s;
+        transition: top 0.4s;
+        top: 0;
+        margin: 0px 35px;
+        font-size: larger;
+        // background-color: white;
+        color: yellow;
+        flex-shrink: 0;
+        &:hover {
+            top: -50px;
+        }
+    }
+}
+.card {
+    border-radius: 10px;
+    transition: position 0.5s;
+    border: rgb(85, 0, 85) 3px solid;
+    text-align: center;
+    text-transform: none;
+    padding: 5px;
+    margin: 5px 18px;
+    width: 150px;
+    height: calc(1.4 * 150px);
+    color: var(--secondary-color);
+    background-color: var(--primary-color);
+    flex-shrink: 0;
+    font-family: "Oswald", sans-serif;
+    font-weight: 500;
+}
+.meme-format {
+    width: 500px;
+    height: 500px;
+    flex-shrink: 0;
+
+    & img {
+        border-radius: inherit;
+        width: 100%;
+        height: 100%;
+    }
 }
 
 .content {
@@ -40,28 +181,6 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    & .title {
-        border: purple 2px solid;
-        border-radius: 10px;
-        padding: 5px 10px;
-        background: rgb(255, 255, 255);
-        background: linear-gradient(90deg, rgba(255, 255, 255, 1) 50%, rgba(90, 0, 125, 1) 50%);
-
-        & h1 {
-            font-size: 100px;
-            margin: 0;
-            background: linear-gradient(90deg, rgba(90, 0, 125, 1) 52%, rgba(255, 255, 255, 1) 51%);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-        }
-    }
-
-    &.game {
-        & .title h1 {
-            font-size: 30px;
-        }
-    }
 
     &.homepage {
         & .dashboard {
@@ -106,7 +225,30 @@ body {
     border: var(--primary-color) 2px solid;
     border-radius: 5px;
     color: var(--secondary-color);
+    &.start{
+        border-radius: 80px;
 
+        font-size: 50px;
+        width: 350px;
+        height: 150px;
+        position: absolute;
+        left: calc(850px - 175px) ;
+        top: 300px;
+
+        color: black;
+        background-color: white;
+        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease 0s;
+        outline: none;
+
+        &:hover{
+            background-color: #2EE59D;
+            box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+            color: #fff;
+            transform: translateY(-7px);
+            opacity: 1;
+        }
+    }
     &:hover {
         opacity: 0.8;
     }

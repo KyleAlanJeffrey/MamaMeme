@@ -19,11 +19,11 @@
             <div class="login-section mx-2 p-3">
                 <div class="form-group login">
                     <label class="mx-2" for="">Name</label>
-                    <input type="text" class="form-control mx-2" name="" id="" aria-describedby="helpId"
+                    <input type="text" class="form-control mx-2" name="" id="user-input" aria-describedby="helpId"
                         placeholder="LugNutz">
                 </div>
                 <button onclick="findServer()" class="mbtn">Play!</button>
-                <button class="mbtn">Create Private Room</button>
+                <button onclick="createServer()" class="mbtn">Create Private Room</button>
             </div>
             <!-- <div class="info-section mx-2"></div> -->
         </div>
@@ -44,12 +44,18 @@
 
     <script>
         const socket = io();
+        $(document).ready(function () {
+            // const nickname = getCookie('username');
+            // $('#user-input').val(nickname);
+            $('#user-input').val('Ball Licker ' + Math.floor(200 * Math.random()));
+        });
         socket.on('connect', () => {
             console.log('connected');
         });
-
         async function findServer() {
             socket.emit('findServer', (data) => {
+                let username = $('#user-input').val();
+                setCookie('username', username);
                 $('.content').addClass('next-page');
                 $('body').css('overflow', 'hidden');
                 setTimeout(() => {
@@ -57,7 +63,38 @@
                 }, 900);
             });
         }
+        function createServer(){
+            socket.emit('createPrivateRoom', (data) => {
+                let username = $('#user-input').val();
+                setCookie('username', username);
+                $('.content').addClass('next-page');
+                $('body').css('overflow', 'hidden');
+                setTimeout(() => {
+                    window.location.href = window.location.href + data.urlExt;
+                }, 900);
+            });
 
+        }
+
+        // Cooke stuff
+        function setCookie(cname, cvalue) {
+            document.cookie = cname + "=" + cvalue + ";";
+        }
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
     </script>
 </body>
 

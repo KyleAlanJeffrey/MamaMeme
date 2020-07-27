@@ -1,8 +1,34 @@
 @import url("https://fonts.googleapis.com/css2?family=Anton&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;500&display=swap");
 :root {
   --primary-color: purple;
   --secondary-color: white;
   --background-color: hotpink;
+  --page-content-offset: 0;
+}
+
+@-webkit-keyframes slide-up-anim {
+  0% {
+    top: 100;
+  }
+  75% {
+    top: -30;
+  }
+  100% {
+    top: 0;
+  }
+}
+
+@keyframes slide-up-anim {
+  0% {
+    top: 100;
+  }
+  75% {
+    top: -30;
+  }
+  100% {
+    top: 0;
+  }
 }
 
 @-webkit-keyframes next-page-anim {
@@ -31,9 +57,53 @@
   }
 }
 
+@-webkit-keyframes new-page-anim {
+  0% {
+    -webkit-transform: rotateZ(0);
+            transform: rotateZ(0);
+    left: -100%;
+  }
+  100% {
+    -webkit-transform: rotateZ(360deg);
+            transform: rotateZ(360deg);
+    left: var(--page-content-offset);
+  }
+}
+
+@keyframes new-page-anim {
+  0% {
+    -webkit-transform: rotateZ(0);
+            transform: rotateZ(0);
+    left: -100%;
+  }
+  100% {
+    -webkit-transform: rotateZ(360deg);
+            transform: rotateZ(360deg);
+    left: var(--page-content-offset);
+  }
+}
+
+.slide-up {
+  -webkit-animation: slide-up-anim 1s;
+          animation: slide-up-anim 1s;
+}
+
 .next-page {
   -webkit-animation: next-page-anim 1s;
           animation: next-page-anim 1s;
+}
+
+.new-page {
+  -webkit-animation: new-page-anim 1s;
+          animation: new-page-anim 1s;
+}
+
+.hide-overflow {
+  overflow: hidden;
+}
+
+.hidden {
+  opacity: 0;
 }
 
 body {
@@ -41,7 +111,158 @@ body {
   text-transform: uppercase;
   margin: 0;
   padding: 0;
-  background-color: hotpink;
+  background-color: rgba(255, 105, 180, 0.527);
+}
+
+.title {
+  border: purple 2px solid;
+  border-radius: 10px;
+  padding: 5px 10px;
+  background: white;
+  background: -webkit-gradient(linear, left top, right top, color-stop(50%, white), color-stop(50%, #5a007d));
+  background: linear-gradient(90deg, white 50%, #5a007d 50%);
+}
+
+.title h1 {
+  font-size: 50px;
+  margin: 0;
+  background: -webkit-gradient(linear, left top, right top, color-stop(52%, #5a007d), color-stop(51%, white));
+  background: linear-gradient(90deg, #5a007d 52%, white 51%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.game-content {
+  position: absolute;
+  top: 100px;
+  height: 700px;
+  width: 1700px;
+  padding: 20px;
+  background: -webkit-gradient(linear, left top, right top, color-stop(50%, #5a007d), color-stop(50%, white));
+  background: linear-gradient(90deg, #5a007d 50%, white 50%);
+  border-radius: 10px;
+}
+
+.game-content .title {
+  width: 180px;
+}
+
+.game-content .title h1 {
+  font-size: 30px;
+}
+
+.game-content .game-display {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 100%;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+.game-content .game-display .meme-format-container {
+  margin: 15px;
+  padding-right: 100px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 45%;
+}
+
+.game-content .game-display .meme-answer-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  width: 45%;
+}
+
+.players {
+  position: fixed;
+  top: 95%;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.players .player {
+  -webkit-transition: -webkit-box-flex 1s;
+  transition: -webkit-box-flex 1s;
+  transition: flex 1s;
+  transition: flex 1s, -webkit-box-flex 1s, -ms-flex 1s;
+  -webkit-transition: top 0.4s;
+  transition: top 0.4s;
+  top: 0;
+  margin: 0px 35px;
+  font-size: larger;
+  color: yellow;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+.players .player:hover {
+  top: -50px;
+}
+
+.card {
+  border-radius: 10px;
+  -webkit-transition: position 0.5s;
+  transition: position 0.5s;
+  border: #550055 3px solid;
+  text-align: center;
+  text-transform: none;
+  padding: 5px;
+  margin: 5px 18px;
+  width: 150px;
+  height: calc(1.4 * 150px);
+  color: var(--secondary-color);
+  background-color: var(--primary-color);
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+  font-family: "Oswald", sans-serif;
+  font-weight: 500;
+}
+
+.meme-format {
+  width: 500px;
+  height: 500px;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+.meme-format img {
+  border-radius: inherit;
+  width: 100%;
+  height: 100%;
 }
 
 .content {
@@ -61,29 +282,6 @@ body {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-}
-
-.content .title {
-  border: purple 2px solid;
-  border-radius: 10px;
-  padding: 5px 10px;
-  background: white;
-  background: -webkit-gradient(linear, left top, right top, color-stop(50%, white), color-stop(50%, #5a007d));
-  background: linear-gradient(90deg, white 50%, #5a007d 50%);
-}
-
-.content .title h1 {
-  font-size: 100px;
-  margin: 0;
-  background: -webkit-gradient(linear, left top, right top, color-stop(52%, #5a007d), color-stop(51%, white));
-  background: linear-gradient(90deg, #5a007d 52%, white 51%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-}
-
-.content.game .title h1 {
-  font-size: 30px;
 }
 
 .content.homepage .dashboard {
@@ -151,6 +349,33 @@ body {
   border: var(--primary-color) 2px solid;
   border-radius: 5px;
   color: var(--secondary-color);
+}
+
+.mbtn.start {
+  border-radius: 80px;
+  font-size: 50px;
+  width: 350px;
+  height: 150px;
+  position: absolute;
+  left: calc(850px - 175px);
+  top: 300px;
+  color: black;
+  background-color: white;
+  -webkit-box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+          box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  -webkit-transition: all 0.3s ease 0s;
+  transition: all 0.3s ease 0s;
+  outline: none;
+}
+
+.mbtn.start:hover {
+  background-color: #2EE59D;
+  -webkit-box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+          box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+  color: #fff;
+  -webkit-transform: translateY(-7px);
+          transform: translateY(-7px);
+  opacity: 1;
 }
 
 .mbtn:hover {

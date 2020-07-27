@@ -27,28 +27,45 @@ http.listen(PORT, () => {
 
 // All Socket stuff
 const rooms = new RoomsArray();
-rooms.addRoom();
+rooms.addRoom(false);
 rooms.print();
 
 io.on('connection', (socket) => {
-    console.log('Someone Connected to a socket');
 
     socket.on('findServer', (callback) => {
         let room = rooms.findOpenRoom();
-        if(!room) room = rooms.addRoom();
+        if (!room) room = rooms.addRoom(false);
         const urlExt = room.id;
         callback({ 'urlExt': urlExt });
     });
-
-    socket.on('joinedServer', (data) => {
+    socket.on('createPrivateRoom', (callback) => {
+        let room = rooms.addRoom(true);
+        const urlExt = room.id;
+        callback({ 'urlExt': urlExt });
+    });
+    socket.on('joinedServer', (data, callback) => {
         console.log(`Searching for room ${data.id}`);
-        let room = rooms.getRoomByID(data.id);
         const ip = socket.handshake.address;
-        room.addPlayer(data.username, socket.handshake.address);
+
+        let room = rooms.getRoomByID(data.id);
+        let player = room.addPlayer(data.username, ip);
         room.print();
+        socket.join(room.id);
+
+        socket.to(room.id).emit('playerJoined', player);
+        callback(room.getPlayers());
+    });
+    socket.on('leaveRoom', (data) => {
+        console.log('Removing player');
+        const roomID = data.id;
+        const name = data.username;
+        let room = rooms.getRoomByID(roomID);
+
+        room.players.removePlayer(name);
 
     });
 });
+
 
 
 
