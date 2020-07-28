@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="build/styles.css">
 </head>
 
-<body class="d-flex justify-content-center" style="flex-shrink: 0;">
+<body class="d-flex justify-content-center hide-overflow" style="flex-shrink: 0;user-select: none;">
     <div class="game-content hidden">
         <div class="d-flex justify-content-center pb-5">
             <div class="title">
@@ -19,19 +19,20 @@
         <div class="game-display">
             <div class="meme-format-container">
                 <div class="meme-format">
-                    <!-- <img src="/public/img/memes/meme1.JPG" alt="" srcset=""> -->
+                    <img class="hidden" src="./1.JPG" alt="" srcset="">
                 </div>
             </div>
             <div class="meme-answer-container">
-                <!-- <div class="card">
+                <!-- <div class="card glow">
                     <span>When you turn your computer off and on again and it works</span>
                 </div> -->
             </div>
         </div>
     </div>
     <div class="players">
-        <!-- <div class="player card slide-up">${name}</div> -->
+        <!-- <div class="player card slide-up">${Jane}</div> -->
     </div>
+
 
 
 
@@ -51,14 +52,17 @@
         $(document).ready(function () {
             const gameContent = $('.game-content');
             cssVariables.setProperty('--page-content-offset', $('.game-content').offset().left);
-            gameContent.removeClass('hidden').addClass('new-page');
+            // gameContent.removeClass('hidden').addClass('new-page');
+            setTimeout(() => { $('body').removeClass('hide-overflow'); }, 1000);
+            gameContent.removeClass('hidden');
         });
+
         let username = getCookie('username');
         let myPlayer = undefined;
         const urlExt = window.location.href.split('/')[3];
-        const room = new Room($('.players'),$('.game-content'));
+        const room = new Room($('.players'), $('.game-content'), $('.meme-format img'), $('.meme-answer-container'));
         const socket = io();
-
+        const memes = [];
 
         socket.on('connect', () => {
             console.log('connected!');
@@ -68,17 +72,58 @@
                     let p = room.addPlayer(player.username, player.lead);
                     if (p.name == username) myPlayer = p;
                 });
-                if(myPlayer.lead) myPlayer.addHostPrivilege(room.boardElement);
+                if (myPlayer.lead) myPlayer.addHostPrivilege(room.$board);
             });
-        });
-
-        socket.on('playerJoined', (playerData) => {
-            room.addPlayer(playerData.username);
         });
         // Disconnect
         $(window).on('unload', () => {
             // socket.emit('leaveRoom', { 'id': urlExt, 'username': username });
         });
+        socket.on('redirect', (data) => {
+            console.log(`Redirecting to ${data.url}`);
+            window.location.assign(data.url);
+        });
+
+        // Socket Events
+        socket.on('playerJoined', (playerData) => {
+            room.addPlayer(playerData.username);
+        });
+
+        function requestStartGame() {
+            $('#start-game-button').hide();
+            socket.emit('hostRequestStart', { 'roomID': urlExt }, (data) => {
+                memes.unshift(data.image);
+                room.startGame(memes[0]);
+            });
+        }
+        socket.on('startGame', (data) => {
+            memes.unshift(data.image);
+            room.startGame(memes[0]);
+        });
+        socket.on('startRound', (data) => {
+            memes.unshift(data.image);
+            room.startRound(memes[0]);
+        });
+        socket.on('answerSubmitted', (data) => {
+            room.addHiddenAnswer(data.answer, data.playerName);
+        });
+        socket.on('endRound', (data) => {
+            room.endRound(myPlayer, socket);
+        });
+        // Socket Emit
+        function submitAnswer() {
+            const answer = $('#user-answer').val();
+            $('.answer-input').remove();
+            $('.submit-answer').remove();
+            socket.emit('submitAnswer', { 'answer': answer, 'roomID': urlExt, 'playerName': myPlayer.name }, () => {
+                room.endRound();
+            });
+            room.addHiddenAnswer(answer, myPlayer.name);
+        }
+
+
+
+
         // Cooke stuff
         function setCookie(cname, cvalue) {
             document.cookie = cname + "=" + cvalue + ";";

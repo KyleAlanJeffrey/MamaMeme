@@ -14,8 +14,8 @@
     0% {
         top: 100;
     }
-    75%{
-        top: -30
+    75% {
+        top: -30;
     }
     100% {
         top: 0;
@@ -41,23 +41,89 @@
         left: var(--page-content-offset);
     }
 }
-.slide-up{
+@keyframes slide-in-anim {
+    0% {
+        left: 110%;
+    }
+    80% {
+        left: 81%;
+    }
+    100% {
+        left: 85%;
+    }
+}
+@keyframes flip-anim-180 {
+    from {
+        transform: rotateY(0deg);
+    }
+    to {
+        transform: rotateY(180deg);
+    }
+}
+@keyframes flip-180-rev-anim {
+    from {
+        transform: rotateY(0deg);
+    }
+    to {
+        transform: rotateY(-180deg);
+    }
+}
+@keyframes card-toss-anim {
+    from {
+        transform: rotateZ(0deg);
+        left: -100%;
+    }
+    to {
+        left: 170px;
+        transform: rotateZ(720deg);
+    }
+}
+@keyframes reveal-card-anim{
+    from{
+        transform: rotateY(0deg);
+    }
+    to{
+        transform: rotateY(180deg);
+    }
+}
+.slide-up {
     animation: slide-up-anim 1s;
+}
+.slide-in {
+    animation: slide-in-anim 1s;
 }
 .next-page {
     animation: next-page-anim 1s;
 }
 .new-page {
     animation: new-page-anim 1s;
-
 }
-
+.flip-180 {
+    animation: flip-anim-180 1s;
+}
+.flip-180-rev {
+    animation: flip-180-rev-anim 1s;
+}
+.card-toss {
+    animation: card-toss-anim 1s;
+}
+.reveal-card{
+    animation: reveal-card-anim 1s;
+    cursor: pointer;
+}
 // Custom attribute classes
-.hide-overflow{
+.hide-overflow {
     overflow: hidden;
 }
-.hidden{
+.hidden {
     opacity: 0;
+}
+.text-right{
+    text-align: right;
+}
+.glow{
+    box-shadow: -6px 3px 45px 23px rgba(255,191,0,1);
+    transform: scale(1.1);
 }
 
 body {
@@ -111,7 +177,7 @@ body {
             padding-right: 100px;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-content: center;
             width: 45%;
         }
         & .meme-answer-container {
@@ -147,9 +213,8 @@ body {
 }
 .card {
     border-radius: 10px;
-    transition: position 0.5s;
+    transition: all 0.3s;
     border: rgb(85, 0, 85) 3px solid;
-    text-align: center;
     text-transform: none;
     padding: 5px;
     margin: 5px 18px;
@@ -160,19 +225,46 @@ body {
     flex-shrink: 0;
     font-family: "Oswald", sans-serif;
     font-weight: 500;
+    &.backside {
+        background-image: url("../img/logo.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        & span {
+            color: transparent;
+        }
+    }
+    &.answer-input {
+        position: fixed;
+        top: 50%;
+        left: 85%;
+        transform: scale(3);
+        & textarea {
+            background: inherit;
+            font-family: inherit;
+            color: inherit;
+            outline: none;
+            box-shadow: none;
+            border: none;
+            resize: none;
+        }
+    }
 }
 .meme-format {
     width: 500px;
     height: 500px;
     flex-shrink: 0;
+    position: absolute;
 
     & img {
-        border-radius: inherit;
+        border-radius: 10px;
+        border: black solid 10px;
         width: 100%;
         height: 100%;
     }
 }
 
+// Index.html
 .content {
     position: absolute;
     height: 100%;
@@ -225,14 +317,14 @@ body {
     border: var(--primary-color) 2px solid;
     border-radius: 5px;
     color: var(--secondary-color);
-    &.start{
+    &.start {
         border-radius: 80px;
 
         font-size: 50px;
         width: 350px;
         height: 150px;
         position: absolute;
-        left: calc(850px - 175px) ;
+        left: calc(850px - 175px);
         top: 300px;
 
         color: black;
@@ -241,8 +333,8 @@ body {
         transition: all 0.3s ease 0s;
         outline: none;
 
-        &:hover{
-            background-color: #2EE59D;
+        &:hover {
+            background-color: #2ee59d;
             box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
             color: #fff;
             transform: translateY(-7px);

@@ -1,10 +1,13 @@
+const fs = require('fs');
 const ROOM_SIZE = 8;
+
 class Room {
     constructor(id) {
         this.id = id;
         this.private = false;
         this.full = false;
         this.players = new PlayersArray();
+        this.answersSubmitted = 0;
     }
     addPlayer(username, ip) {
         let player = this.players.addPlayer(username, ip);
@@ -14,6 +17,24 @@ class Room {
     }
     getPlayers() {
         return this.players.playerList;
+    }
+    answerSubmitted(data, socket,callback){
+        this.answersSubmitted++;
+        socket.to(data.roomID).emit('answerSubmitted', { 'answer': data.answer, 'playerName': data.playerName });
+        if(this.answersSubmitted == this.players.length){
+            socket.to(data.roomID).emit('endRound');
+            callback();
+        }
+    }
+    startGame(socket, callback) {
+        console.log(`Starting game in room ${this.id}...`);
+        this.private = true;
+        let m_num = Math.floor(12*Math.random());
+        console.log(`Sending meme ${m_num}`);
+        fs.readFile(`./img/${m_num}.jpg`, (err, data) => {
+            socket.to(this.id).emit('startGame', { 'image': 'data:image/png;base64,' + data.toString('base64') });
+            callback({ 'image': 'data:image/JPG;base64,' + data.toString('base64') });
+        });
     }
     static createID() {
         let A = 65;

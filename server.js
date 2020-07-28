@@ -2,10 +2,12 @@ const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
+const fs = require('fs');
+
 const { Room, RoomsArray, Player, PlayersArray } = require('./ServerClasses');
 
 const PORT = process.env.PORT || 3000;
-
+const homeURL = 'http://localhost:3000/';
 
 // Http Server Stuff
 app.use(express.static('public'));
@@ -38,16 +40,20 @@ io.on('connection', (socket) => {
         const urlExt = room.id;
         callback({ 'urlExt': urlExt });
     });
+
     socket.on('createPrivateRoom', (callback) => {
         let room = rooms.addRoom(true);
         const urlExt = room.id;
         callback({ 'urlExt': urlExt });
     });
+
     socket.on('joinedServer', (data, callback) => {
         console.log(`Searching for room ${data.id}`);
         const ip = socket.handshake.address;
 
         let room = rooms.getRoomByID(data.id);
+        if (!room) { socket.emit('redirect', { 'url': homeURL }); return };
+
         let player = room.addPlayer(data.username, ip);
         room.print();
         socket.join(room.id);
@@ -55,6 +61,18 @@ io.on('connection', (socket) => {
         socket.to(room.id).emit('playerJoined', player);
         callback(room.getPlayers());
     });
+
+    socket.on('hostRequestStart', (data, callback) => {
+        let room = rooms.getRoomByID(data.roomID);
+        room.startGame(socket, callback);
+    });
+
+    socket.on('submitAnswer', (data, callback) => {
+        let room = rooms.getRoomByID(data.roomID);
+        room.answerSubmitted(data, socket, callback);
+
+    });
+
     socket.on('leaveRoom', (data) => {
         console.log('Removing player');
         const roomID = data.id;
