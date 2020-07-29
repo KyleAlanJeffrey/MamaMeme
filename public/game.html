@@ -10,6 +10,9 @@
 </head>
 
 <body class="d-flex justify-content-center hide-overflow" style="flex-shrink: 0;user-select: none;">
+    <div class="score-overlay">
+    </div>
+
     <div class="game-content hidden">
         <div class="d-flex justify-content-center pb-5">
             <div class="title">
@@ -23,11 +26,12 @@
                 </div>
             </div>
             <div class="meme-answer-container">
-                <!-- <div class="card glow">
+                <div class="vote-prompt hidden">Click to Vote on the Funniest!</div>
+                <!-- <div class="card reveal-card">
                     <span>When you turn your computer off and on again and it works</span>
                 </div> -->
             </div>
-        </div>
+        </div>    
     </div>
     <div class="players">
         <!-- <div class="player card slide-up">${Jane}</div> -->
@@ -108,7 +112,11 @@
             room.addHiddenAnswer(data.answer, data.playerName);
         });
         socket.on('endRound', (data) => {
-            room.endRound(myPlayer, socket);
+            room.endRound();
+        });
+        socket.on('endVoting',(data)=>{
+            const playersData = data.players;
+            room.endVoting(playersData);
         });
         // Socket Emit
         function submitAnswer() {

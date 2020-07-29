@@ -49,12 +49,11 @@ io.on('connection', (socket) => {
 
     socket.on('joinedServer', (data, callback) => {
         console.log(`Searching for room ${data.id}`);
-        const ip = socket.handshake.address;
 
         let room = rooms.getRoomByID(data.id);
         if (!room) { socket.emit('redirect', { 'url': homeURL }); return };
 
-        let player = room.addPlayer(data.username, ip);
+        let player = room.addPlayer(data.username);
         room.print();
         socket.join(room.id);
 
@@ -66,13 +65,23 @@ io.on('connection', (socket) => {
         let room = rooms.getRoomByID(data.roomID);
         room.startGame(socket, callback);
     });
-
+    socket.on('hostRequestStartRound', (data, callback) => {
+        let room = rooms.getRoomByID(data.roomID);
+        room.startRound(socket, callback);
+    });
     socket.on('submitAnswer', (data, callback) => {
         let room = rooms.getRoomByID(data.roomID);
         room.answerSubmitted(data, socket, callback);
 
     });
-
+    socket.on('submitVote', (data, callback) => {
+        const room = rooms.getRoomByID(data.roomID);
+        room.submitVote(data.playerVoteName, socket, callback);
+    });
+    socket.on('timeLimitReached', (data) => {
+        let room = rooms.getRoomByID(data.roomID);
+        room.endRound();
+    });
     socket.on('leaveRoom', (data) => {
         console.log('Removing player');
         const roomID = data.id;

@@ -5,12 +5,21 @@ const STAGES = {
     VOTING: 4
 }
 const CARD_REVEAL_INTERVAL = 2000;
+const ROUND_TIME = 100;
+
 class ElementCreate {
     constructor() {
 
     }
     static answerCard() {
         return $.parseHTML('<div class="card answer-input slide-in"><textarea name = "" id = "user-answer" cols = "30" rows = "10" placeholder = "Put your funny answer here" ></textarea ><button id="submit-answer-button" class="mbtn submit-answer slide-in" onclick="submitAnswer()">SUBMIT</button></div> ');
+    }
+    static countdownClock(text) {
+        const clock = $('<div>', {
+            'class': 'countdown-clock',
+            'text': text
+        });
+        return clock;
     }
     static gameCard(text, player, classes) {
         const card = $('<div>', {
@@ -46,6 +55,7 @@ class Player {
         this.lead = false;
         this.vote = undefined;
         this.answerCard = undefined;
+        this.points = 0;
     }
     addHostPrivilege(board) {
         this.lead = true;
@@ -64,7 +74,7 @@ class Card {
         this.element.addClass('reveal-card');
         setTimeout(() => {
             this.element.removeClass('backside text-right').on('click', () => { this.clicked() })
-            console.log(this.element.text()) ;
+            console.log(this.element.text());
         }, 400);
     }
     clicked() {
@@ -72,6 +82,10 @@ class Card {
         myPlayer.vote = this.player;
         $('.glow').removeClass('glow');
         this.element.addClass('glow');
+        socket.emit('submitVote', { 'playerName': myPlayer.name, 'playerVoteName': this.player.name, 'roomID': urlExt },(data)=>{
+            const playersData = data.players;
+            room.endVoting(playersData);
+        });
     }
 }
 class Room {
@@ -101,6 +115,8 @@ class Room {
         this.$memeImage.removeClass('hidden');
         $('.meme-format').addClass('card-toss');
         this.$memeContainer.attr('src', img);
+
+        setTimeout(() => { $('.meme-format').removeClass('card-toss'); }, 2000);
     }
     addHiddenAnswer(text, playerName) {
         let player = this.findPlayerByName(playerName);
@@ -109,20 +125,52 @@ class Room {
         this.$memeAnswers.append(card.element);
     }
     startRound(meme) {
+        $('.reveal-card').remove()
+        this.$memeImage.addClass('hidden');
+
         this.stage = STAGES.WRITE_ANSWERS;
-        this.startCountDown(65);
+        const countdownClock = ElementCreate.countdownClock(ROUND_TIME);
+        this.$board.append(countdownClock);
+        this.startCountDown(ROUND_TIME, countdownClock);
+
         this.$board.append(ElementCreate.answerCard());
+
+
         this.loadMeme(meme);
     }
-    startCountDown(seconds) {
+    startCountDown(seconds, countdownElement) {
         this.countdown = seconds;
         const I = setInterval(() => {
             this.countdown--;
-            if (!this.countdown) this.endRound();
+            countdownElement.text(this.countdown);
+            if (this.countdown < 0) {
+                clearInterval(I);
+                // if (myPlayer.lead) socket.emit('timeLimitReached', { 'roomID': urlExt });
+            }
         }, 1000);
     }
-    endRound(myPlayer, socket) {
+    endVoting(playersData) {
+        $('.vote-prompt').addClass('hidden');
+        let t = 0, dt = 2000;
+        playersData.forEach((playerData) => {
+            console.log(playerData)
+            let player = room.findPlayerByName(playerData.username);
+            player.points = playerData.points;
+        });
+        setTimeout(() => {
+            if (myPlayer.lead) {
+                socket.emit('hostRequestStartRound', { 'roomID': urlExt }, (data) => {
+                    memes.unshift(data.image);
+                    room.startRound(memes[0]);
+                });
+            }
+        }, t);
+    }
+    endRound() {
         this.stage = STAGES.VOTING;
+        $('.countdown-clock').remove();
+        $('.vote-prompt').removeClass('hidden');
+
         //Reveal all answers 1 by 1
         let t = 0, dt = CARD_REVEAL_INTERVAL;
         this.players.forEach((player) => {
@@ -131,13 +179,7 @@ class Room {
             }, t);
             t += dt;
         });
-        //Vote on favorite answer
-
-        //start another round, keep track of score
-        t += 3000;
-        if (myPlayer.lead) {
-            setTimeout(() => { socket.emit('startRound'); }, t);
-        }
+        //Now wait for voting to end
     }
     findPlayerByName(name) {
         return this.players.find((player) => {
