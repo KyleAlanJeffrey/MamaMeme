@@ -49,85 +49,83 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="./js/states.js"></script>
     <script src="./js/game.js"></script>
+    <script src="./js/elements.js"></script>
+
 
     <script>
         const cssVariables = document.documentElement.style;
         $(document).ready(function () {
             const gameContent = $('.game-content');
             cssVariables.setProperty('--page-content-offset', $('.game-content').offset().left);
-            // gameContent.removeClass('hidden').addClass('new-page');
+            gameContent.removeClass('hidden').addClass('new-page');
             setTimeout(() => { $('body').removeClass('hide-overflow'); }, 1000);
-            gameContent.removeClass('hidden');
+            // gameContent.removeClass('hidden');
         });
 
-        let username = getCookie('username');
-        let myPlayer = undefined;
-        const urlExt = window.location.href.split('/')[3];
-        const room = new Room($('.players'), $('.game-content'), $('.meme-format img'), $('.meme-answer-container'));
         const socket = io();
+        const room = new Room(socket);
         const memes = [];
 
         socket.on('connect', () => {
-            console.log('connected!');
-            socket.emit('joinedServer', { 'id': urlExt, 'username': username }, (players) => {
-                console.log(players);
-                players.forEach(player => {
-                    let p = room.addPlayer(player.username, player.lead);
-                    if (p.name == username) myPlayer = p;
-                });
-                if (myPlayer.lead) myPlayer.addHostPrivilege(room.$board);
-            });
+            const msg = new Message('joinedServer');
+            msg.playerData = {'name': room.myUsername};
+            socket.emit('messageFromClient', msg);
         });
-        // Disconnect
         $(window).on('unload', () => {
-            // socket.emit('leaveRoom', { 'id': urlExt, 'username': username });
+            const msg = new Message('leaveRoom');
+            msg.playerData = {name: room.myUsername};
+            socket.emit('messageFromClient', msg);
         });
         socket.on('redirect', (data) => {
             console.log(`Redirecting to ${data.url}`);
             window.location.assign(data.url);
         });
 
-        // Socket Events
-        socket.on('playerJoined', (playerData) => {
-            room.addPlayer(playerData.username);
+
+        // Socket Game Event Listener
+        socket.on('messageFromServer', (data)=>{
+            room.parseMessage(data);
         });
 
-        function requestStartGame() {
-            $('#start-game-button').hide();
-            socket.emit('hostRequestStart', { 'roomID': urlExt }, (data) => {
-                memes.unshift(data.image);
-                room.startGame(memes[0]);
-            });
-        }
-        socket.on('startGame', (data) => {
-            memes.unshift(data.image);
-            room.startGame(memes[0]);
-        });
-        socket.on('startRound', (data) => {
-            memes.unshift(data.image);
-            room.startRound(memes[0]);
-        });
-        socket.on('answerSubmitted', (data) => {
-            room.addHiddenAnswer(data.answer, data.playerName);
-        });
-        socket.on('endRound', (data) => {
-            room.endRound();
-        });
-        socket.on('endVoting',(data)=>{
-            const playersData = data.players;
-            room.endVoting(playersData);
-        });
+
+        // socket.on('startGame', (data) => {
+        //     memes.unshift(data.image);
+        //     room.startGame(memes[0]);
+        // });
+        // socket.on('startRound', (data) => {
+        //     memes.unshift(data.image);
+        //     room.startRound(memes[0]);
+        // });
+        // socket.on('answerSubmitted', (data) => {
+        //     room.addHiddenAnswer(data.answer, data.playerName);
+        // });
+        // socket.on('endRound', (data) => {
+        //     room.endRound();
+        // });
+        // socket.on('endVoting',(data)=>{
+        //     const playersData = data.players;
+        //     room.endVoting(playersData);
+        // });
+
         // Socket Emit
-        function submitAnswer() {
-            const answer = $('#user-answer').val();
-            $('.answer-input').remove();
-            $('.submit-answer').remove();
-            socket.emit('submitAnswer', { 'answer': answer, 'roomID': urlExt, 'playerName': myPlayer.name }, () => {
-                room.endRound();
-            });
-            room.addHiddenAnswer(answer, myPlayer.name);
-        }
+        // function submitAnswer() {
+        //     const answer = $('#user-answer').val();
+        //     $('.answer-input').remove();
+        //     $('.submit-answer').remove();
+        //     socket.emit('submitAnswer', { 'answer': answer, 'roomID': urlExt, 'playerName': myPlayer.name }, () => {
+        //         room.endRound();
+        //     });
+        //     room.addHiddenAnswer(answer, myPlayer.name);
+        // }
+        // function requestStartGame() {
+        //     $('#start-game-button').hide();
+        //     socket.emit('hostRequestStart', { 'roomID': urlExt }, (data) => {
+        //         memes.unshift(data.image);
+        //         room.startGame(memes[0]);
+        //     });
+        // }
 
 
 

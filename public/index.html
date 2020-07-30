@@ -49,9 +49,7 @@
             // $('#user-input').val(nickname);
             $('#user-input').val('Ball Licker ' + Math.floor(200 * Math.random()));
         });
-        socket.on('connect', () => {
-            console.log('connected');
-        });
+
         async function findServer() {
             socket.emit('findServer', (data) => {
                 let username = $('#user-input').val();
