@@ -1,35 +1,50 @@
 class Message {
     constructor(event) {
         this.event = event;
-        this.roomID = null;
         this.playerData = null;
         this.playersData = null;
+        this.img = null;
     }
 }
-
+// STATES = {
+//     LOBBY: 1,
+//     START: 2,
+//     SUBMISSION: 3,
+//     VOTING: 4,
+//     SCORE: 5,
+//     RESULTS: 6
+// }
 class State {
     constructor(state, room) {
         this.timerInterval = null;
         this.duration = null;
         this.state = state;
         this.room = room;
-
-        const msg = new Message(this.state);
-        room.io.to(room.id).emit('messageFromServer', msg);
     }
-    startTimer(duration) {
-        const room = this.room;
+    /**
+     * @description Starts a timeout for the state and sends a custom message to the client if specified
+     * @param {*} Duration 
+     * @param {*} Outgoing_Message 
+     */
+    start(duration, msg) {
         this.duration = duration
+        if (!msg) msg = new Message(this.state);
+        this.room.sendGameMessage(msg);
+        if (duration == -1) return;
+
         this.timerInterval = setInterval(() => {
-            if (this.duration != -1) {
-                this.duration--;
-            } else if (this.duration <= 0) {
+            this.duration--;
+            if (this.duration <= 0) {
                 clearInterval(this.timerInterval);
                 this.end();
             }
         }, 1000);
     }
-    parseMessage(msg, socket) {
+    /**
+     * @description The supermethod for parsing client messages. Messages parsed here must do the same thing in every state i.e. when a player joins, a card is always added to the lobby.
+     * @param {*} Incoming_Message 
+     */
+    parseMessage(msg) {
         const playerData = msg.playerData;
         const playersData = msg.playersData;
         const room = this.room;
@@ -51,15 +66,14 @@ class Lobby extends State {
         super('Lobby', room);
     }
     parseMessage(msg, socket) {
-        super.parseMessage(msg, socket);
+        super.parseMessage(msg);
         const playerData = msg.playerData;
         const playersData = msg.playersData;
         const room = this.room;
-
         switch (msg.event) {
             case ('joinedServer'):
                 room.addPlayer(playerData.name, playerData.lead);
-                socket.join(this.id);
+                socket.join(room.id);
                 // Send player who joined all players
                 const msg = new Message('loadPlayers');
                 msg.playersData = room.players;
@@ -79,7 +93,7 @@ class Lobby extends State {
     end() {
         super.end()
         this.room.state = new Start(this.room);
-        this.room.state.startTimer(5);
+        this.room.state.start(1, null);
     }
 }
 
@@ -87,20 +101,41 @@ class Start extends State {
     constructor(room) {
         super('Start', room);
     }
-    end() {
+    async end() {
         super.end();
         this.room.state = new Submission(this.room);
-        this.room.state.start();
-        console.log('Ending start state from start class');
+        const OUT_MSG = new Message('Submission');
+        OUT_MSG.img = await this.room.getMeme();
+
+        this.room.state.start(100, OUT_MSG);
     }
 }
 class Submission extends State {
     constructor(room) {
         super('Submission', room);
+        this.answersSubmitted;
     }
-    start() {
-        super.startTimer(100);
-        this.room.sendMeme();
+    parseMessage(IN_MSG, socket) {
+        super.parseMessage(IN_MSG, socket);
+
+        switch (IN_MSG.event) {
+            case ('submitAnswer'): {
+                const OUT_MSG = new Message('answerSubmitted');
+                OUT_MSG.answer = IN_MSG.answer;
+                this.room.sendGameMessage(OUT_MSG);
+
+                const SERVER_PLAYER = this.room.getPlayerByName(IN_MSG.playerData.name);
+                SERVER_PLAYER.addAnswer(IN_MSG.answer);
+                if (this.answersSubmitted == this.room.players.length) this.end();
+            }
+        }
+    }
+    end() {
+        super.end();
+        this.room.state = new Voting(this.room);
+        const OUT_MSG = new Message('Voting');
+        OUT_MSG.playersData = this.room.players;
+        this.room.state.start(50, OUT_MSG);
     }
 
 }

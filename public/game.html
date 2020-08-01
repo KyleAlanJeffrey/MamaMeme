@@ -31,7 +31,7 @@
                     <span>When you turn your computer off and on again and it works</span>
                 </div> -->
             </div>
-        </div>    
+        </div>
     </div>
     <div class="players">
         <!-- <div class="player card slide-up">${Jane}</div> -->
@@ -70,12 +70,12 @@
 
         socket.on('connect', () => {
             const msg = new Message('joinedServer');
-            msg.playerData = {'name': room.myUsername};
+            msg.playerData = { 'name': room.myUsername };
             socket.emit('messageFromClient', msg);
         });
         $(window).on('unload', () => {
             const msg = new Message('leaveRoom');
-            msg.playerData = {name: room.myUsername};
+            msg.playerData = { name: room.myUsername };
             socket.emit('messageFromClient', msg);
         });
         socket.on('redirect', (data) => {
@@ -85,8 +85,11 @@
 
 
         // Socket Game Event Listener
-        socket.on('messageFromServer', (data)=>{
+        socket.on('messageFromServer', (data) => {
             room.parseMessage(data);
+        });
+        socket.on('meme', (data) => {
+            room.memes.unshift(data.image);
         });
 
 

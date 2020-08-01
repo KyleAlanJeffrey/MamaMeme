@@ -47,26 +47,11 @@ io.on('connection', (socket) => {
         callback({ 'urlExt': urlExt });
     });
 
-    socket.on('joinedServer', (data, callback) => {
-
-        // socket.join(room.id);
-
-        // socket.to(room.id).emit('playerJoined', player);
-    });
-
-
-
     socket.on('messageFromClient', (data) => {
         const room = rooms.getRoomByID(data.roomID);
         if (!room) { socket.emit('redirect', { 'url': homeURL }); return };
         room.parseMessage(data, socket);
     })
-
-
-    // socket.on('hostRequestStart', (data, callback) => {
-    //     let room = rooms.getRoomByID(data.roomID);
-    //     room.startGame(socket, callback);
-    // });
 
 
     // socket.on('hostRequestStartRound', (data, callback) => {

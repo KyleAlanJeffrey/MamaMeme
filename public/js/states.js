@@ -32,7 +32,6 @@ class Lobby extends State {
                 break;
 
             case ('loadPlayers'):
-                console.log('Loading Players');
                 playersData.forEach(playerData => {
                     let player = room.addPlayer(playerData.name, playerData.lead);
                     if (player.name == room.myUsername) room.myPlayer = player;
@@ -57,11 +56,14 @@ class Lobby extends State {
 class Start extends State {
     constructor(room) {
         super('Start', room);
+        // Do all animation stuff here
+
     }
     parseMessage(msg) {
         super.parseMessage(msg);
         switch (msg.event) {
             case ('Submission'):
+                this.room.memes.unshift(msg.img);
                 this.end();
                 break;
             default:
@@ -78,10 +80,7 @@ class Submission extends State {
     constructor(room) {
         super('Submission', room);
         room.startCountdown(100);
-        room.createAnswerCard();
-        room.loadMeme();
-
-        this.$board.append(ElementCreate.answerCard());
+        room.loadSubmissionElements();
     }
 
 }

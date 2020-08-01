@@ -30,7 +30,11 @@ class Room {
         // this.votesSubmitted = 0;
         this.state = new Lobby(this);
     }
-
+    getPlayerByName(name) {
+        return this.players.find((player) => {
+            return player.name == name;
+        });
+    }
     addPlayer(username, socket) {
         let player = new Player(username, socket);
         this.players.push(player);
@@ -48,17 +52,18 @@ class Room {
         });
     }
     parseMessage(data, socket) {
-        const playerData = data.playerData;
-        const playersData = data.playersData;
-        const EVENT = data.event;
-
         this.state.parseMessage(data, socket);
     }
-    sendMeme() {
+    getMeme() {
         let m_num = Math.floor(12 * Math.random());
-        fs.readFile(`./img/${m_num}.jpg`, (err, data) => {
-            this.io.to(this.id).emit('meme', { 'image': 'data:image/png;base64,' + data.toString('base64') });
+        return new Promise((res, rej) => {
+            fs.readFile(`./img/${m_num}.jpg`, (err, data) => {
+                res('data:image/png;base64,' + data.toString('base64'));
+            });
         });
+    }
+    sendGameMessage(msg) {
+        this.io.to(this.id).emit('messageFromServer', msg);
     }
 
 
@@ -138,9 +143,13 @@ class Player {
         this.lead = false;
         this.points = 0;
         this.socket = socket;
+        this.answers = [];
     }
     addVote() {
         this.points += POINT_MULTIPLIER;
+    }
+    addAnswer(answer) {
+        this.answers.unshift(answer);
     }
 }
 
@@ -181,4 +190,4 @@ class RoomsArray {
     }
 }
 
-module.exports = { Room, RoomsArray, Message};
+module.exports = { Room, RoomsArray, Message };

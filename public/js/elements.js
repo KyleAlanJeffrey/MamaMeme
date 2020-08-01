@@ -23,7 +23,7 @@ class Card {
 }
 class ElementCreate {
     static answerCard() {
-        return $.parseHTML('<div class="card answer-input slide-in"><textarea name = "" id = "user-answer" cols = "30" rows = "10" placeholder = "Put your funny answer here" ></textarea ><button id="submit-answer-button" class="mbtn submit-answer slide-in" onclick="submitAnswer()">SUBMIT</button></div> ');
+        return $.parseHTML('<div class="card answer-input slide-in"><textarea name = "" id = "user-answer" cols = "30" rows = "10" placeholder = "Put your funny answer here" ></textarea ><button id="submit-answer-button" class="mbtn submit-answer slide-in" onclick="room.submitAnswer()">SUBMIT</button></div> ');
     }
     static countdownClock(text) {
         const clock = $('<div>', {

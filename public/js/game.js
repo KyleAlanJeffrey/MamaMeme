@@ -16,7 +16,7 @@ class Message {
     constructor(event) {
         this.event = event;
         this.roomID = urlExt;
-        this.playerData = null;
+        this.playerData = room.myPlayer;
         this.playersData = null
     }
 }
@@ -31,9 +31,11 @@ class Room {
         this.socket = socket;
         this.myPlayer = null;
         this.myUsername = getCookie('username');
+        this.$board = $('.game-content');
+        this.memes = [];
         this.state = new Lobby(this);
-        this.$board('.game-content');
     }
+
     addPlayer(name, lead) {
         const playerCard = ElementCreate.playerCard(name, { host: lead });
         $('.players').append(playerCard);
@@ -48,32 +50,46 @@ class Room {
     }
     requestStart() {
         $('#start-game-button').hide();
-        const msg = new Message('hostRequestStart');
-        this.socket.emit('messageFromClient', msg);
+        const OUT_MSG = new Message('hostRequestStart');
+        this.sendServerMessage(OUT_MSG);
+    }
+    submitAnswer(){
+        const OUT_MSG = new Message('submitAnswer');
+        OUT_MSG.answer = $('#user-answer').val();
+        $('.card.answer-input').remove();
+        this.sendServerMessage(OUT_MSG); 
     }
     parseMessage(message) {
         this.state.parseMessage(message)
     }
     startCountdown(time) {
-        const countdownClock = ElementCreate.countdownClock(time);
-        this.$board.append(countdownClock);
+        this.countdownClock = ElementCreate.countdownClock(time);
+        this.$board.append(this.countdownClock);
 
         this.countdown = time;
         this.countInterval = setInterval(() => {
             this.countdown--;
-            countdownElement.text(this.countdown);
+            this.countdownClock.text(this.countdown);
             if (this.countdown <= 0) {
                 clearInterval(this.countInterval);
             }
         }, 1000);
     }
-    loadMeme() {
-        this.$memeImage.addClass('hidden');
-        this.$memeImage.removeClass('hidden');
-        $('.meme-format').addClass('card-toss');
-        this.$memeContainer.attr('src', img);
+    loadSubmissionElements() {
+        const $memeIMG = $('.meme-format img');
+        const $memeContainer = $('.meme-format');
 
+        $memeIMG.addClass('hidden');
+        $memeIMG.removeClass('hidden');
+        $memeContainer.addClass('card-toss');
+        console.log(this.memes);
+        $memeIMG.attr('src', this.memes[0]);
         setTimeout(() => { $('.meme-format').removeClass('card-toss'); }, 2000);
+
+        this.$board.append(ElementCreate.answerCard());
+    }
+    sendServerMessage(OUT_MSG) {
+        this.socket.emit('messageFromClient', OUT_MSG);
     }
 
 }
