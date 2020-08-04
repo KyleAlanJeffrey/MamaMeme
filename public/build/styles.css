@@ -63,6 +63,8 @@ body {
   text-align: center;
   font-size: 80px;
   background: lightblue;
+  -webkit-animation: slam-anim .4s;
+          animation: slam-anim .4s;
 }
 
 .score-overlay {
@@ -577,6 +579,36 @@ body {
     top: 60px;
     -webkit-transform: rotateZ(-5deg);
             transform: rotateZ(-5deg);
+  }
+}
+
+@-webkit-keyframes slam-anim {
+  0% {
+    -webkit-transform: scale(2);
+            transform: scale(2);
+  }
+  80% {
+    -webkit-transform: scale(0.8);
+            transform: scale(0.8);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+
+@keyframes slam-anim {
+  0% {
+    -webkit-transform: scale(2);
+            transform: scale(2);
+  }
+  80% {
+    -webkit-transform: scale(0.8);
+            transform: scale(0.8);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
   }
 }
 

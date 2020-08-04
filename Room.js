@@ -67,19 +67,6 @@ class Room {
     }
 
 
-    // answerSubmitted(data, socket, callback) {
-    //     this.answersSubmitted++;
-    //     socket.to(data.roomID).emit('answerSubmitted', { 'answer': data.answer, 'playerName': data.playerName });
-    //     if (this.answersSubmitted == this.players.length) {
-    //         this.startVoting(socket, callback);
-    //     }
-    // }
-    // startVoting(socket, callback) {
-    //     socket.to(data.roomID).emit('endRound');
-    //     callback();
-
-    //     this.countdown = VOTING_TIME;
-
     // }
     // submitVote(playerName, socket, callback) {
     //     this.votesSubmitted++;
@@ -96,13 +83,7 @@ class Room {
     //     socket.to(this.id).emit('endVoting', { 'players': this.players.playerList });
     //     callback({ 'players': this.players.playerList });
     // }
-    // startRound(socket, callback) {
-    //     let m_num = Math.floor(12 * Math.random());
-    //     fs.readFile(`./img/${m_num}.jpg`, (err, data) => {
-    //         socket.to(this.id).emit('startRound', { 'image': 'data:image/png;base64,' + data.toString('base64') });
-    //         callback({ 'image': 'data:image/JPG;base64,' + data.toString('base64') });
-    //     });
-    // }
+  
 
 
     // startGame(socket, callback) {

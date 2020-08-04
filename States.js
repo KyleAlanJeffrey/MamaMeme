@@ -94,6 +94,7 @@ class Lobby extends State {
         super.end()
         this.room.state = new Start(this.room);
         this.room.state.start(1, null);
+        this.room.private = true;
     }
 }
 
@@ -106,26 +107,28 @@ class Start extends State {
         this.room.state = new Submission(this.room);
         const OUT_MSG = new Message('Submission');
         OUT_MSG.img = await this.room.getMeme();
-
         this.room.state.start(100, OUT_MSG);
     }
 }
 class Submission extends State {
     constructor(room) {
         super('Submission', room);
-        this.answersSubmitted;
+        this.answersSubmitted = 0;
     }
     parseMessage(IN_MSG, socket) {
         super.parseMessage(IN_MSG, socket);
 
         switch (IN_MSG.event) {
             case ('submitAnswer'): {
-                const OUT_MSG = new Message('answerSubmitted');
-                OUT_MSG.answer = IN_MSG.answer;
-                this.room.sendGameMessage(OUT_MSG);
-
                 const SERVER_PLAYER = this.room.getPlayerByName(IN_MSG.playerData.name);
                 SERVER_PLAYER.addAnswer(IN_MSG.answer);
+                this.answersSubmitted++;
+
+                const OUT_MSG = new Message('answerSubmitted');
+                OUT_MSG.answer = IN_MSG.answer;
+                OUT_MSG.playerData = SERVER_PLAYER;
+                this.room.sendGameMessage(OUT_MSG);
+
                 if (this.answersSubmitted == this.room.players.length) this.end();
             }
         }
@@ -135,8 +138,21 @@ class Submission extends State {
         this.room.state = new Voting(this.room);
         const OUT_MSG = new Message('Voting');
         OUT_MSG.playersData = this.room.players;
-        this.room.state.start(50, OUT_MSG);
+        this.room.state.start(2, OUT_MSG);
     }
-
+}
+class Voting extends State {
+    constructor(room) {
+        super('Voting', room);
+    }
+    start(duration, OUT_MSG) {
+        super.start(duration, OUT_MSG);
+    }
+    async end() {
+        this.room.state = new Submission(this.room);
+        const OUT_MSG = new Message('Submission');
+        OUT_MSG.img = await this.room.getMeme();
+        this.room.state.start(100, OUT_MSG);
+    }
 }
 module.exports = { State, Lobby, Start, Submission };

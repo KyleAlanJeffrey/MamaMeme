@@ -20,11 +20,7 @@
             </div>
         </div>
         <div class="game-display">
-            <div class="meme-format-container">
-                <div class="meme-format">
-                    <img class="hidden" src="./1.JPG" alt="" srcset="">
-                </div>
-            </div>
+            <div class="meme-format-container"></div>
             <div class="meme-answer-container">
                 <div class="vote-prompt hidden">Click to Vote on the Funniest!</div>
                 <!-- <div class="card reveal-card">
@@ -66,7 +62,6 @@
 
         const socket = io();
         const room = new Room(socket);
-        const memes = [];
 
         socket.on('connect', () => {
             const msg = new Message('joinedServer');
@@ -83,55 +78,10 @@
             window.location.assign(data.url);
         });
 
-
         // Socket Game Event Listener
         socket.on('messageFromServer', (data) => {
             room.parseMessage(data);
         });
-        socket.on('meme', (data) => {
-            room.memes.unshift(data.image);
-        });
-
-
-        // socket.on('startGame', (data) => {
-        //     memes.unshift(data.image);
-        //     room.startGame(memes[0]);
-        // });
-        // socket.on('startRound', (data) => {
-        //     memes.unshift(data.image);
-        //     room.startRound(memes[0]);
-        // });
-        // socket.on('answerSubmitted', (data) => {
-        //     room.addHiddenAnswer(data.answer, data.playerName);
-        // });
-        // socket.on('endRound', (data) => {
-        //     room.endRound();
-        // });
-        // socket.on('endVoting',(data)=>{
-        //     const playersData = data.players;
-        //     room.endVoting(playersData);
-        // });
-
-        // Socket Emit
-        // function submitAnswer() {
-        //     const answer = $('#user-answer').val();
-        //     $('.answer-input').remove();
-        //     $('.submit-answer').remove();
-        //     socket.emit('submitAnswer', { 'answer': answer, 'roomID': urlExt, 'playerName': myPlayer.name }, () => {
-        //         room.endRound();
-        //     });
-        //     room.addHiddenAnswer(answer, myPlayer.name);
-        // }
-        // function requestStartGame() {
-        //     $('#start-game-button').hide();
-        //     socket.emit('hostRequestStart', { 'roomID': urlExt }, (data) => {
-        //         memes.unshift(data.image);
-        //         room.startGame(memes[0]);
-        //     });
-        // }
-
-
-
 
         // Cooke stuff
         function setCookie(cname, cvalue) {

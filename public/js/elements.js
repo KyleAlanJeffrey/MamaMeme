@@ -1,24 +1,24 @@
 class Card {
-    constructor(text, player) {
+    constructor(text, player, room) {
+        this.room = room;
         this.player = player;
-        this.element = ElementCreate.gameCard(text, player, 'backside');
+        this.element = ElementCreate.gameCard(player.name, 'backside');
+        this.answer = text;
     }
     reveal() {
         this.element.addClass('reveal-card');
         setTimeout(() => {
-            this.element.removeClass('backside text-right').on('click', () => { this.clicked() })
-            console.log(this.element.text());
+            this.element.removeClass('backside text-right').on('click', () => { this.clicked() });
+            this.element.text(this.answer);
         }, 400);
     }
     clicked() {
-        if (this.player == myPlayer) return; //No Voting for self
-        myPlayer.vote = this.player;
-        $('.glow').removeClass('glow');
+        // if (this.player == this.room.myPlayer) return; //No Voting for self
+        this.clickable = false;
+        this.room.myPlayer.vote = { name: this.player.name };
         this.element.addClass('glow');
-        socket.emit('submitVote', { 'playerName': myPlayer.name, 'playerVoteName': this.player.name, 'roomID': urlExt }, (data) => {
-            const playersData = data.players;
-            room.endVoting(playersData);
-        });
+        const OUT_MSG = new Message('submitVote');
+        this.room.sendServerMessage(OUT_MSG);
     }
 }
 class ElementCreate {
@@ -32,12 +32,12 @@ class ElementCreate {
         });
         return clock;
     }
-    static gameCard(text, player, classes) {
+    static gameCard(text, classes) {
         const card = $('<div>', {
             'class': `card ${classes}`,
-            'text': player.name
+            'text': text
         });
-        card.append(`<span>${text}</span>`);
+        // card.append(`<span>${text}</span>`);
         return card;
 
     }
@@ -57,5 +57,15 @@ class ElementCreate {
         });
         btn.on('click', () => { room.requestStart() });
         return btn;
+    }
+    static meme(image) {
+        const meme = $('<div>', {
+            'class': 'meme-format card-toss',
+        });
+        const img = $('<img>', {
+            'src': image,
+        });
+        meme.append(img);
+        return meme;
     }
 }
