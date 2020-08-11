@@ -76,9 +76,10 @@ class Room {
         this.waitPrompt = new WaitPrompt();
     }
     startRoundAnimations() {
-        // document.getElementById('wait_music').play();
+        document.getElementById('round1_intro').play();
+        document.getElementById('wait_music').play();
         $('#round-overlay').css('left', '0%');
-        setTimeout(() => { $('#round-overlay').css('left', '100%'); }, 4000);
+        setTimeout(() => { $('#round-overlay').css('left', '100%'); }, 5000);
     }
     displayRoundScore() {
         let t = 2000, dt = 2000;
@@ -105,13 +106,13 @@ class Room {
         this.state.parseMessage(message)
     }
     loadSubmissionElements() {
+        document.getElementById('woosh_audio').play();
         $('body').addClass('hide-overflow');
         setTimeout(() => { $('body').removeClass('hide-overflow'); }, 1000);
         $('.meme-format-container').append(ElementCreate.meme(this.memes[0]));
         this.$board.append(ElementCreate.answerCard());
     }
     addHiddenSubmission(answer, playerName) {
-        document.getElementById('beep2_audio').play();
         let player = this.getPlayerByName(playerName);
         let card = new Card(answer, player, this);
         player.submissionCard = card;

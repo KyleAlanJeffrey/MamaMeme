@@ -89,7 +89,7 @@ class Lobby extends State {
     end() {
         super.end()
         this.room.state = new Start(this.room);
-        this.room.state.start(3, null);
+        this.room.state.start(5, null);
         this.room.private = true;
     }
 }
