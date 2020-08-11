@@ -8,6 +8,8 @@
     --background-color: hotpink;
     --page-content-offset: 0;
     --text-gradient: linear-gradient(90deg, white 50%, purple 50%);
+    --card-height: calc(1.4 * 150px);
+    --card-width: 150px;
 }
 
 // Custom attribute classes
@@ -58,18 +60,73 @@ body {
     text-align: center;
     font-size: 80px;
     background: lightblue;
-    animation: slam-anim .4s;
+    animation: slam-anim 0.4s;
 }
-.score-overlay{
+
+#round-overlay{
     position: fixed;
-    background-color: lightpink;
+    background-color: rgba(119, 136, 153, 0.952);
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    left: -100%;
+    transition: left 2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    & h1{
+        font-size: 100px;
+    }
+}
+#score-overlay {
+    position: fixed;
+    background-color: rgba(119, 136, 153, 0.897);
     width: 100%;
     height: 100%;
     z-index: 100;
-    top: -100%;
-    transition: all .4s;
+    top: 100%;
+    transition: all 0.4s;
+    display: none;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    & .player {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        width: 180px;
+        height: 600px;
+        padding: 15px;
+        margin: 10px;
+        & .card {
+            margin: 0;
+            margin-top: 15px;
+            text-align: center;
+        }
+    }
+    & .score-bar {
+        height: 300px;
+        border: black solid 4px;
+        & .points {
+            position: relative;
+            top: 150;
+            height: 150px;
+            background-color: gold;
+        }
+    }
 }
-
+@keyframes waiting-prompt-anim {
+    0% {
+        content: "Waiting on host.";
+    }
+    50% {
+        content: "Waiting on host..";
+    }
+    100% {
+        content: "Waiting on host..";
+    }
+}
 .game-content {
     position: absolute;
     top: 100px;
@@ -85,12 +142,19 @@ body {
             font-size: 30px;
         }
     }
+
     & .game-display {
         display: flex;
         flex-direction: row;
         justify-content: center;
         width: 100%;
         flex-shrink: 0;
+        & .waiting-prompt {
+            position: absolute;
+            left: 1100px;
+            top: 300px;
+            width: 500px;
+        }
         & .meme-format-container {
             margin: 15px;
             padding-right: 100px;
@@ -105,11 +169,11 @@ body {
             align-items: flex-start;
             flex-wrap: wrap;
             width: 45%;
-            & .vote-prompt{
+            & .vote-prompt {
                 position: absolute;
                 top: 60px;
                 font-size: 30px;
-                animation: shake-anim .3s infinite alternate-reverse;
+                animation: shake-anim 0.3s infinite alternate-reverse;
             }
         }
     }
@@ -117,7 +181,7 @@ body {
 
 .players {
     position: fixed;
-    top: 95%;
+    top: 93%;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -129,15 +193,47 @@ body {
         top: 0;
         margin: 0px 35px;
         font-size: larger;
-        // background-color: white;
         color: yellow;
+        text-align: center;
         flex-shrink: 0;
         &:hover {
             top: -50px;
         }
+        & span {
+            color: greenyellow;
+        }
+        &.scored {
+            animation: pop-up-anim 1s;
+            &::before {
+                position: absolute;
+                top: -50;
+                left: 40;
+                content: "+100";
+                animation: fade-in-out-anim 1s;
+                color: greenyellow;
+                opacity: 0;
+                font-size: xx-large;
+            }
+        }
+    }
+}
+@keyframes fade-in-out-anim {
+    0% {
+        opacity: 0;
+    }
+    40% {
+        opacity: 1;
+    }
+    60% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
     }
 }
 .card {
+    text-align: center;
+    color: white;
     border-radius: 10px;
     transition: all 0.3s;
     border: rgb(85, 0, 85) 3px solid;
@@ -151,6 +247,9 @@ body {
     flex-shrink: 0;
     font-family: "Oswald", sans-serif;
     font-weight: 500;
+    & .name {
+        color: yellow;
+    }
     &.backside {
         background-image: url("../img/logo.png");
         background-size: contain;
@@ -165,6 +264,7 @@ body {
         top: 50%;
         left: 85%;
         transform: scale(3);
+        z-index: 1000;
         & textarea {
             background: inherit;
             font-family: inherit;
@@ -273,6 +373,17 @@ body {
 }
 
 // ?Animations
+@keyframes pop-up-anim {
+    0% {
+        top: 0;
+    }
+    50% {
+        top: -100;
+    }
+    100% {
+        top: 0;
+    }
+}
 @keyframes slide-up-anim {
     0% {
         top: 100;
@@ -349,8 +460,16 @@ body {
         transform: rotateY(180deg);
     }
 }
-@keyframes shake-anim{
-    0%{
+@keyframes reveal-card-text-anim {
+    from {
+        transform: scaleX(-1);
+    }
+    to {
+        transform: scaleX(-1);
+    }
+}
+@keyframes shake-anim {
+    0% {
         top: 60px;
         transform: rotateZ(5deg);
     }
@@ -359,22 +478,21 @@ body {
     //     transform: rotateZ(15deg);
 
     // }
-    100%{
+    100% {
         top: 60px;
         transform: rotateZ(-5deg);
     }
 }
-@keyframes slam-anim{
-    0%{
+@keyframes slam-anim {
+    0% {
         transform: scale(2);
     }
-    80%{
-        transform:scale(.8)
+    80% {
+        transform: scale(0.8);
     }
-    100%{
+    100% {
         transform: scale(1);
     }
-    
 }
 .slide-up {
     animation: slide-up-anim 1s;
@@ -400,7 +518,10 @@ body {
 .reveal-card {
     animation: reveal-card-anim 1s;
     cursor: pointer;
-    &:hover{
+    & span {
+        animation: reveal-card-text-anim 1s;
+    }
+    &:hover {
         box-shadow: -6px 3px 45px 10px rgba(255, 191, 0, 1);
         transform: scale(1.05);
     }

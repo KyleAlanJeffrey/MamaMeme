@@ -84,16 +84,12 @@ class Lobby extends State {
             case ('hostRequestStart'):
                 this.end();
                 break;
-
-            default:
-                console.log(`---${EVENT} is an unspecified event!---`);
-                break;
         }
     }
     end() {
         super.end()
         this.room.state = new Start(this.room);
-        this.room.state.start(1, null);
+        this.room.state.start(3, null);
         this.room.private = true;
     }
 }
@@ -114,9 +110,15 @@ class Submission extends State {
     constructor(room) {
         super('Submission', room);
         this.answersSubmitted = 0;
+        room.resetVotes();
     }
-    parseMessage(IN_MSG, socket) {
-        super.parseMessage(IN_MSG, socket);
+    async start() {
+        const OUT_MSG = new Message('Submission');
+        OUT_MSG.img = await this.room.getMeme();
+        super.start(100, OUT_MSG);
+    }
+    parseMessage(IN_MSG) {
+        super.parseMessage(IN_MSG);
 
         switch (IN_MSG.event) {
             case ('submitAnswer'): {
@@ -136,23 +138,48 @@ class Submission extends State {
     end() {
         super.end();
         this.room.state = new Voting(this.room);
-        const OUT_MSG = new Message('Voting');
-        OUT_MSG.playersData = this.room.players;
-        this.room.state.start(2, OUT_MSG);
+        this.room.state.start();
     }
 }
 class Voting extends State {
     constructor(room) {
         super('Voting', room);
+        this.votesSubmitted = 0;
     }
-    start(duration, OUT_MSG) {
-        super.start(duration, OUT_MSG);
+    start() {
+        const OUT_MSG = new Message('Voting');
+        OUT_MSG.playersData = this.room.players;
+        super.start(30, OUT_MSG);
+    }
+    parseMessage(IN_MSG) {
+        super.parseMessage(IN_MSG);
+        switch (IN_MSG.event) {
+            case ('submitVote'):
+                this.votesSubmitted++;
+                this.room.addVote(IN_MSG.playerData);
+                if (this.votesSubmitted == this.room.players.length) this.end();
+                break;
+        }
     }
     async end() {
+        this.room.state = new Score(this.room);
+        this.room.state.start();
+    }
+}
+class Score extends State {
+    constructor(room) {
+        super('Score', room);
+    }
+    start(){
+        // Get Every player that scored
+        const OUT_MSG = new Message('Score');
+        OUT_MSG.playersData = this.room.players;
+        super.start(5, OUT_MSG);
+    }
+    end() {
+        super.end();
         this.room.state = new Submission(this.room);
-        const OUT_MSG = new Message('Submission');
-        OUT_MSG.img = await this.room.getMeme();
-        this.room.state.start(100, OUT_MSG);
+        this.room.state.start();
     }
 }
 module.exports = { State, Lobby, Start, Submission };

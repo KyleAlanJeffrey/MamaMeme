@@ -25,9 +25,6 @@ class Room {
         this.players = [];
         this.io = io;
         this.ROOM_SIZE = 8;
-
-        // this.answersSubmitted = 0;
-        // this.votesSubmitted = 0;
         this.state = new Lobby(this);
     }
     getPlayerByName(name) {
@@ -65,39 +62,16 @@ class Room {
     sendGameMessage(msg) {
         this.io.to(this.id).emit('messageFromServer', msg);
     }
+    resetVotes() {
+        this.players.forEach((player) => {
+            player.roundVotes = 0;
+        });
+    }
+    addVote(playerData) {
+        let votedPlayer = this.getPlayerByName(playerData.vote.name);
+        votedPlayer.addVote();
+    }
 
-
-    // }
-    // submitVote(playerName, socket, callback) {
-    //     this.votesSubmitted++;
-    //     const playerVoted = this.players.findByName(playerName);
-    //     playerVoted.addVote();
-
-    //     if (this.votesSubmitted == this.players.length) {
-    //         this.endVoting(socket, callback);
-    //     }
-    // }
-    // endVoting(socket, callback) {
-    //     console.log(`Ending round in room ${this.id}`);
-    //     this.reset();
-    //     socket.to(this.id).emit('endVoting', { 'players': this.players.playerList });
-    //     callback({ 'players': this.players.playerList });
-    // }
-  
-
-
-    // startGame(socket, callback) {
-    //     // ADD MORE STUFF TO THE START OF THE GAME, LIKE VISUALS
-    //     console.log(`Starting game in room ${this.id}...`);
-    //     this.private = true;
-
-    //     this.startRound(socket, callback);
-    // }
-
-    // reset() {
-    //     this.votesSubmitted = 0;
-    //     this.answersSubmitted = 0;
-    // }
 
     static createID() {
         let A = 65;
@@ -125,9 +99,11 @@ class Player {
         this.points = 0;
         this.socket = socket;
         this.answers = [];
+        this.roundVotes = 0;
     }
     addVote() {
         this.points += POINT_MULTIPLIER;
+        this.roundVotes++;
     }
     addAnswer(answer) {
         this.answers.unshift(answer);

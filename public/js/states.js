@@ -16,8 +16,6 @@ class State {
         console.log(msg);
     }
     startCountdown(duration) {
-        if (this.duration == -1) return;
-
         this.countdownClock = ElementCreate.countdownClock(duration);
         this.room.$board.append(this.countdownClock);
 
@@ -33,6 +31,7 @@ class State {
     }
     endCountdown() {
         clearInterval(this.countInterval);
+        $('.countdown-clock').remove();
     }
 }
 
@@ -55,42 +54,33 @@ class Lobby extends State {
                     let player = room.addPlayer(playerData.name, playerData.lead);
                     if (player.name == room.myUsername) room.myPlayer = player;
                 });
-                if (room.myPlayer.lead) room.myPlayer.addHostPrivilege();
+                if (room.myPlayer.lead) room.myPlayer.addHostPrivilege()
+                else room.addWaitPrompt();
                 break;
 
             case ('Start'):
-                this.end();
-                break;
-
-            default:
-                console.log(`---${EVENT} is an unspecified event!---`);
+                this.room.state = new Start(this.room);
                 break;
         }
-    }
-    end() {
-        this.room.state = new Start(this.room);
     }
 }
 
 class Start extends State {
     constructor(room) {
         super('Start', room);
+        if (!room.myPlayer.lead) room.waitPrompt.remove();
+        room.startRoundAnimations();
         // Do all animation stuff here
 
     }
-    parseMessage(msg) {
-        super.parseMessage(msg);
-        switch (msg.event) {
+    parseMessage(IN_MSG) {
+        super.parseMessage(IN_MSG);
+        switch (IN_MSG.event) {
             case ('Submission'):
-                this.room.memes.unshift(msg.img);
-                this.end();
+                this.room.memes.unshift(IN_MSG.img);
+                this.room.state = new Submission(this.room);
                 break;
         }
-    }
-    end() {
-        this.room.state = new Submission(this.room);
-        // this.room.state.startCountdown(100);
-        // console.log('Ending start state from start class');
     }
 }
 class Submission extends State {
@@ -107,33 +97,56 @@ class Submission extends State {
                 break;
             case ('Voting'):
                 this.end();
+                this.room.state = new Voting(this.room);
                 break;
         }
     }
     end() {
         super.endCountdown();
-        room.clearSubmissionElements();
-        this.room.state = new Voting(this.room);
-        this.room.state.startCountdown(30);
+
     }
 }
 class Voting extends State {
     constructor(room) {
         super('Voting', room);
+        super.startCountdown(30);
         room.loadVotingElements();
     }
     parseMessage(IN_MSG) {
         super.parseMessage(IN_MSG);
         switch (IN_MSG.event) {
-            case ('Submission'):
-                this.room.memes.unshift(IN_MSG.img);
+            case ('Score'):
+                IN_MSG.playersData.forEach((playerData) => {
+                    const player = this.room.getPlayerByName(playerData.name);
+                    player.roundVotes = playerData.roundVotes;
+                });
                 this.end();
+                this.room.state = new Score(this.room);
+                break;
+        }
+    }
+    end() {
+        super.endCountdown();
+    }
+}
+
+class Score extends State {
+    constructor(room) {
+        super('Score', room);
+        room.displayRoundScore();
+    }
+    parseMessage(IN_MSG) {
+        super.parseMessage(IN_MSG);
+        switch (IN_MSG.event) {
+            case ('Submission'):
+                this.end()
+                this.room.memes.unshift(IN_MSG.img);
+                this.room.state = new Submission(this.room);
                 break;
         }
     }
     end() {
         this.room.clearVotingElements();
-        this.room.state = new Submission(this.room);
-        super.endCountdown();
     }
+
 }

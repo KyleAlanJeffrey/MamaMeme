@@ -6,6 +6,8 @@
   --background-color: hotpink;
   --page-content-offset: 0;
   --text-gradient: linear-gradient(90deg, white 50%, purple 50%);
+  --card-height: calc(1.4 * 150px);
+  --card-width: 150px;
 }
 
 .hide-overflow {
@@ -63,19 +65,117 @@ body {
   text-align: center;
   font-size: 80px;
   background: lightblue;
-  -webkit-animation: slam-anim .4s;
-          animation: slam-anim .4s;
+  -webkit-animation: slam-anim 0.4s;
+          animation: slam-anim 0.4s;
 }
 
-.score-overlay {
+#round-overlay {
   position: fixed;
-  background-color: lightpink;
+  background-color: rgba(119, 136, 153, 0.952);
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  left: -100%;
+  -webkit-transition: left 2s;
+  transition: left 2s;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#round-overlay h1 {
+  font-size: 100px;
+}
+
+#score-overlay {
+  position: fixed;
+  background-color: rgba(119, 136, 153, 0.897);
   width: 100%;
   height: 100%;
   z-index: 100;
-  top: -100%;
-  -webkit-transition: all .4s;
-  transition: all .4s;
+  top: 100%;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+  display: none;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#score-overlay .player {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  width: 180px;
+  height: 600px;
+  padding: 15px;
+  margin: 10px;
+}
+
+#score-overlay .player .card {
+  margin: 0;
+  margin-top: 15px;
+  text-align: center;
+}
+
+#score-overlay .score-bar {
+  height: 300px;
+  border: black solid 4px;
+}
+
+#score-overlay .score-bar .points {
+  position: relative;
+  top: 150;
+  height: 150px;
+  background-color: gold;
+}
+
+@-webkit-keyframes waiting-prompt-anim {
+  0% {
+    content: "Waiting on host.";
+  }
+  50% {
+    content: "Waiting on host..";
+  }
+  100% {
+    content: "Waiting on host..";
+  }
+}
+
+@keyframes waiting-prompt-anim {
+  0% {
+    content: "Waiting on host.";
+  }
+  50% {
+    content: "Waiting on host..";
+  }
+  100% {
+    content: "Waiting on host..";
+  }
 }
 
 .game-content {
@@ -113,6 +213,13 @@ body {
       flex-shrink: 0;
 }
 
+.game-content .game-display .waiting-prompt {
+  position: absolute;
+  left: 1100px;
+  top: 300px;
+  width: 500px;
+}
+
 .game-content .game-display .meme-format-container {
   margin: 15px;
   padding-right: 100px;
@@ -146,12 +253,12 @@ body {
   position: absolute;
   top: 60px;
   font-size: 30px;
-  animation: shake-anim .3s infinite alternate-reverse;
+  animation: shake-anim 0.3s infinite alternate-reverse;
 }
 
 .players {
   position: fixed;
-  top: 95%;
+  top: 93%;
   width: 100%;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -176,6 +283,7 @@ body {
   margin: 0px 35px;
   font-size: larger;
   color: yellow;
+  text-align: center;
   -ms-flex-negative: 0;
       flex-shrink: 0;
 }
@@ -184,7 +292,60 @@ body {
   top: -50px;
 }
 
+.players .player span {
+  color: greenyellow;
+}
+
+.players .player.scored {
+  -webkit-animation: pop-up-anim 1s;
+          animation: pop-up-anim 1s;
+}
+
+.players .player.scored::before {
+  position: absolute;
+  top: -50;
+  left: 40;
+  content: "+100";
+  -webkit-animation: fade-in-out-anim 1s;
+          animation: fade-in-out-anim 1s;
+  color: greenyellow;
+  opacity: 0;
+  font-size: xx-large;
+}
+
+@-webkit-keyframes fade-in-out-anim {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in-out-anim {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 .card {
+  text-align: center;
+  color: white;
   border-radius: 10px;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
@@ -200,6 +361,10 @@ body {
       flex-shrink: 0;
   font-family: "Oswald", sans-serif;
   font-weight: 500;
+}
+
+.card .name {
+  color: yellow;
 }
 
 .card.backside {
@@ -219,6 +384,7 @@ body {
   left: 85%;
   -webkit-transform: scale(3);
           transform: scale(3);
+  z-index: 1000;
 }
 
 .card.answer-input textarea {
@@ -362,6 +528,30 @@ body {
 
 .mbtn:hover {
   opacity: 0.8;
+}
+
+@-webkit-keyframes pop-up-anim {
+  0% {
+    top: 0;
+  }
+  50% {
+    top: -100;
+  }
+  100% {
+    top: 0;
+  }
+}
+
+@keyframes pop-up-anim {
+  0% {
+    top: 0;
+  }
+  50% {
+    top: -100;
+  }
+  100% {
+    top: 0;
+  }
 }
 
 @-webkit-keyframes slide-up-anim {
@@ -556,6 +746,28 @@ body {
   }
 }
 
+@-webkit-keyframes reveal-card-text-anim {
+  from {
+    -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+  }
+  to {
+    -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+  }
+}
+
+@keyframes reveal-card-text-anim {
+  from {
+    -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+  }
+  to {
+    -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+  }
+}
+
 @-webkit-keyframes shake-anim {
   0% {
     top: 60px;
@@ -651,6 +863,11 @@ body {
   -webkit-animation: reveal-card-anim 1s;
           animation: reveal-card-anim 1s;
   cursor: pointer;
+}
+
+.reveal-card span {
+  -webkit-animation: reveal-card-text-anim 1s;
+          animation: reveal-card-text-anim 1s;
 }
 
 .reveal-card:hover {

@@ -1,3 +1,27 @@
+class WaitPrompt {
+    constructor() {
+        const element = $('<h1>', {
+            'class': 'waiting-prompt'
+        });
+        this.element = element;
+        $('.game-display').append(this.element);
+        this.n = 0;
+        this.interval = setInterval(() => {
+            this.n++;
+            const text = 'Waiting on Host';
+            let dots = '';
+            for (let i = 0; i < this.n; i++) {
+                dots += '.';
+            }
+            if (this.n == 3) this.n = -1;
+            this.element.text(text + dots);
+        }, 300);
+    }
+    remove() {
+        clearInterval(this.interval);
+        this.element.remove();
+    }
+}
 class Card {
     constructor(text, player, room) {
         this.room = room;
@@ -6,11 +30,14 @@ class Card {
         this.answer = text;
     }
     reveal() {
-        this.element.addClass('reveal-card');
+        const element = this.element;
         setTimeout(() => {
-            this.element.removeClass('backside text-right').on('click', () => { this.clicked() });
-            this.element.text(this.answer);
-        }, 400);
+            element.removeClass('backside text-right').on('click', () => { this.clicked() });
+            element.children('.name').remove();
+        }, 300)
+        element.append(`<span>${this.answer}</span>`);
+        element.addClass('reveal-card');
+
     }
     clicked() {
         // if (this.player == this.room.myPlayer) return; //No Voting for self
@@ -35,9 +62,8 @@ class ElementCreate {
     static gameCard(text, classes) {
         const card = $('<div>', {
             'class': `card ${classes}`,
-            'text': text
         });
-        // card.append(`<span>${text}</span>`);
+        card.append(`<div class="name">${text}</span>`);
         return card;
 
     }
@@ -47,6 +73,11 @@ class ElementCreate {
             'class': 'player card slide-up',
             'text': name
         });
+        const span = $('<span>', {
+            'text': 'Score: ' + options.score,
+        })
+        card.append(span);
+        setTimeout(() => { card.removeClass('slide-up'); }, 2000);
         return card;
     }
     static startButton() {
@@ -55,7 +86,9 @@ class ElementCreate {
             'text': 'START GAME',
             id: 'start-game-button'
         });
-        btn.on('click', () => { room.requestStart() });
+        btn.on('click', () => {
+            room.requestStart();
+        });
         return btn;
     }
     static meme(image) {

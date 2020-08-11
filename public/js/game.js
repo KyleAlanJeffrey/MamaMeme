@@ -7,14 +7,11 @@ const urlExt = window.location.href.split('/')[3];
 //     SCORE: 5,
 //     RESULTS: 6
 // }
-const LISTEN_EVENT = {
-    PLAYER_JOINED: 'playerJoined',
-    LOAD_PLAYERS: 'loadPlayers'
-}
 
 class Message {
     constructor(event) {
         let me = { ...room.myPlayer };
+        me.card = null;
         me.submissionCard = null;
         me.answerCard = null;
         this.event = event;
@@ -27,16 +24,28 @@ class Message {
 class Player {
     constructor(name, card, lead) {
         this.name = name;
-        this.submissionCard = card;
+        this.card = card;
         this.lead = lead;
         this.vote = undefined;
         this.answerCard = undefined;
         this.points = 0;
+        this.roundVotes = 0;
     }
     addHostPrivilege() {
         console.log('You are the host!')
         let startBtn = ElementCreate.startButton();
         $('.game-content').append(startBtn);
+    }
+    addPoints(playerData) {
+        this.roundVotes = playerData.roundVotes;
+    }
+    pointAnimation() {
+        this.card.addClass('scored');
+        this.points += 100;
+        const score = 'Score: ' + this.points;
+        this.card.children().text(score);
+        document.getElementById('score_audio').play();
+        setTimeout(() => { this.card.removeClass('scored'); }, 1000);
     }
 
 }
@@ -51,17 +60,34 @@ class Room {
         this.memes = [];
         this.state = new Lobby(this);
     }
-
     addPlayer(name, lead) {
-        const playerCard = ElementCreate.playerCard(name, { host: lead });
+        const playerCard = ElementCreate.playerCard(name, { host: lead, score: 0 });
         $('.players').append(playerCard);
         let player = new Player(name, playerCard, lead);
         this.players.push(player);
         return player;
     }
-    findPlayerByName(name) {
+    getPlayerByName(name) {
         return this.players.find((player) => {
             return player.name == name;
+        });
+    }
+    addWaitPrompt() {
+        this.waitPrompt = new WaitPrompt();
+    }
+    startRoundAnimations() {
+        // document.getElementById('wait_music').play();
+        $('#round-overlay').css('left', '0%');
+        setTimeout(() => { $('#round-overlay').css('left', '100%'); }, 4000);
+    }
+    displayRoundScore() {
+        let t = 2000, dt = 2000;
+        this.players.forEach((player) => {
+            const votes = player.roundVotes;
+            for (let i = 0; i < votes; i++) {
+                setTimeout(() => { player.pointAnimation(); }, t);
+                t += dt;
+            }
         });
     }
     requestStart() {
@@ -79,14 +105,14 @@ class Room {
         this.state.parseMessage(message)
     }
     loadSubmissionElements() {
+        $('body').addClass('hide-overflow');
+        setTimeout(() => { $('body').removeClass('hide-overflow'); }, 1000);
         $('.meme-format-container').append(ElementCreate.meme(this.memes[0]));
         this.$board.append(ElementCreate.answerCard());
     }
-    clearSubmissionElements() {
-        $('.countdown-clock').remove();
-    }
     addHiddenSubmission(answer, playerName) {
-        let player = this.findPlayerByName(playerName);
+        document.getElementById('beep2_audio').play();
+        let player = this.getPlayerByName(playerName);
         let card = new Card(answer, player, this);
         player.submissionCard = card;
         $('.meme-answer-container').append(card.element);
@@ -103,9 +129,9 @@ class Room {
     }
     clearVotingElements() {
         $('.meme-format').remove();
-        $('.countdown-clock').remove();
         $('.reveal-card').remove();
         $('.vote-prompt').addClass('hidden');
+        $('#answer-input').remove();
     }
     sendServerMessage(OUT_MSG) {
         this.socket.emit('messageFromClient', OUT_MSG);
