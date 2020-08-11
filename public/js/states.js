@@ -12,8 +12,15 @@ class State {
         this.state = state;
         this.room = room;
     }
-    parseMessage(msg) {
-        console.log(msg);
+    parseMessage(IN_MSG) {
+        console.log(IN_MSG);
+        switch(IN_MSG.event){
+            case('playerLeft'):{
+                room.removePlayer(IN_MSG.playerData.name);
+                break;
+            }
+        }
+
     }
     startCountdown(duration) {
         this.countdownClock = ElementCreate.countdownClock(duration);

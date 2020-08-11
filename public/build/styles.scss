@@ -63,7 +63,7 @@ body {
     animation: slam-anim 0.4s;
 }
 
-#round-overlay{
+#round-overlay {
     position: fixed;
     background-color: rgba(119, 136, 153, 0.952);
     width: 100%;
@@ -75,7 +75,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    & h1{
+    & h1 {
         font-size: 100px;
     }
 }
@@ -169,6 +169,7 @@ body {
             align-items: flex-start;
             flex-wrap: wrap;
             width: 45%;
+            margin-top: 50px;
             & .vote-prompt {
                 position: absolute;
                 top: 60px;
@@ -277,8 +278,8 @@ body {
     }
 }
 .meme-format {
-    width: 500px;
-    height: 500px;
+    width: 600px;
+    height: 550px;
     flex-shrink: 0;
     position: absolute;
 
@@ -483,6 +484,23 @@ body {
         transform: rotateZ(-5deg);
     }
 }
+@keyframes shake-2-anim{
+    0%{
+        transform: rotateZ(0deg);
+    }
+    25%{
+        transform: rotateZ(8deg);
+    }
+    50%{
+        transform: rotateZ(0deg);
+    }
+    75%{
+        transform: rotateZ(-8deg);
+    }
+    100%{
+        transform: rotateZ(0deg);
+    }
+}
 @keyframes slam-anim {
     0% {
         transform: scale(2);
@@ -523,6 +541,6 @@ body {
     }
     &:hover {
         box-shadow: -6px 3px 45px 10px rgba(255, 191, 0, 1);
-        transform: scale(1.05);
+        transform: scale(1.1);
     }
 }

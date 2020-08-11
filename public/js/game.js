@@ -47,6 +47,9 @@ class Player {
         document.getElementById('score_audio').play();
         setTimeout(() => { this.card.removeClass('scored'); }, 1000);
     }
+    remove(){
+        this.card.remove();
+    }
 
 }
 
@@ -61,6 +64,7 @@ class Room {
         this.state = new Lobby(this);
     }
     addPlayer(name, lead) {
+        document.getElementById('blip_audio').play();
         const playerCard = ElementCreate.playerCard(name, { host: lead, score: 0 });
         $('.players').append(playerCard);
         let player = new Player(name, playerCard, lead);
@@ -70,6 +74,13 @@ class Room {
     getPlayerByName(name) {
         return this.players.find((player) => {
             return player.name == name;
+        });
+    }
+    removePlayer(name){
+        const player = this.getPlayerByName(name);
+        player.remove();
+        this.players = this.players.filter(player=>{
+            return player.name != name;
         });
     }
     addWaitPrompt() {
@@ -113,6 +124,7 @@ class Room {
         this.$board.append(ElementCreate.answerCard());
     }
     addHiddenSubmission(answer, playerName) {
+        document.getElementById('bleep_audio').play();
         let player = this.getPlayerByName(playerName);
         let card = new Card(answer, player, this);
         player.submissionCard = card;

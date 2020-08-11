@@ -53,25 +53,6 @@ io.on('connection', (socket) => {
         room.parseMessage(data, socket);
     })
 
-
-    // socket.on('hostRequestStartRound', (data, callback) => {
-    //     let room = rooms.getRoomByID(data.roomID);
-    //     room.startRound(socket, callback);
-    // });
-    // socket.on('submitAnswer', (data, callback) => {
-    //     let room = rooms.getRoomByID(data.roomID);
-    //     room.answerSubmitted(data, socket, callback);
-
-    // });
-    // socket.on('submitVote', (data, callback) => {
-    //     const room = rooms.getRoomByID(data.roomID);
-    //     room.submitVote(data.playerVoteName, socket, callback);
-    // });
-    // socket.on('timeLimitReached', (data) => {
-    //     let room = rooms.getRoomByID(data.roomID);
-    //     room.endRound();
-    // });
-
 });
 
 

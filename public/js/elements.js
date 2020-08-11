@@ -86,9 +86,9 @@ class ElementCreate {
             'text': 'START GAME',
             id: 'start-game-button'
         });
-        btn.on('click', () => {
-            room.requestStart();
-        });
+        btn.click(() => { room.requestStart(); })
+            .mouseover(() => { document.getElementById('blip2_audio').play(); })
+            .mousedown(() => { document.getElementById('blip3_audio').play(); });
         return btn;
     }
     static meme(image) {

@@ -6,14 +6,7 @@ class Message {
         this.img = null;
     }
 }
-// STATES = {
-//     LOBBY: 1,
-//     START: 2,
-//     SUBMISSION: 3,
-//     VOTING: 4,
-//     SCORE: 5,
-//     RESULTS: 6
-// }
+
 class State {
     constructor(state, room) {
         this.timerInterval = null;
@@ -44,15 +37,14 @@ class State {
      * @description The supermethod for parsing client messages. Messages parsed here must do the same thing in every state i.e. when a player joins, a card is always added to the lobby.
      * @param {*} Incoming_Message 
      */
-    parseMessage(msg) {
-        const playerData = msg.playerData;
-        const playersData = msg.playersData;
-        const room = this.room;
-        console.log(msg);
-
-        switch (msg.event) {
+    parseMessage(IN_MSG) {
+        console.log(IN_MSG);
+        switch (IN_MSG.event) {
             case ('leaveRoom'):
-                // room.removePlayer(playerData.name);
+                this.room.removePlayer(IN_MSG.playerData.name);
+                const OUT_MSG = new Message('playerLeft');
+                OUT_MSG.playerData = IN_MSG.playerData;
+                this.room.sendGameMessage(OUT_MSG);
                 break;
         }
     }
@@ -162,6 +154,7 @@ class Voting extends State {
         }
     }
     async end() {
+        super.end();
         this.room.state = new Score(this.room);
         this.room.state.start();
     }

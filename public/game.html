@@ -16,6 +16,11 @@
     <audio id="card_flip_audio" src="./audio/flip_card.wav" type="audio/wav"></audio>
     <audio id="score_audio" src="./audio/ca_ching.wav" type="audio/wav"></audio>
     <audio id="woosh_audio" src="./audio/woosh.wav" type="audio/wav"></audio>
+    <audio id="blip_audio" src="./audio/soft_blip.wav" type="audio/wav"></audio>
+    <audio id="blip2_audio" src="./audio/menu_blip2.wav" type="audio/wav"></audio>
+    <audio id="blip3_audio" src="./audio/menu_blip.wav" type="audio/wav"></audio>
+    <audio id="bleep_audio" src="./audio/bleep.wav" type="audio/wav"></audio>
+
 
     <!-- Overlay -->
     <div id="score-overlay">
@@ -69,15 +74,29 @@
 
     <!-- Main Game Content -->
     <div class="game-content hidden">
-        <div class="d-flex justify-content-center pb-5">
+        <div class="d-flex justify-content-center">
             <div class="title">
                 <h1>MAMA MEME</h1>
             </div>
         </div>
         <div class="game-display">
-            <div class="meme-format-container"></div>
+            <div class="meme-format-container">
+                <div class="meme-format">
+                    <!-- Example meme -->
+                    <!-- <img
+                        src="data:image/png;base64,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"> -->
+                </div>
+            </div>
             <div class="meme-answer-container">
                 <div class="vote-prompt hidden">Click to Vote on the Funniest!</div>
+                <!-- Example Cards -->
+                <!-- <div class="card reveal-card"><span>bleh</span></div>
+                <div class="card reveal-card"><span></span></div>
+                <div class="card reveal-card"><span></span></div>
+                <div class="card reveal-card"><span></span></div>
+                <div class="card reveal-card"><span></span></div>
+                <div class="card reveal-card"><span></span></div> -->
+
             </div>
         </div>
     </div>
@@ -105,10 +124,15 @@
             cssVariables.setProperty('--page-content-offset', $('.game-content').offset().left);
             gameContent.removeClass('hidden').addClass('new-page');
             setTimeout(() => { $('body').removeClass('hide-overflow'); }, 1000);
-            // gameContent.removeClass('hidden');
-            document.getElementById('wait_music').volume = .1;
-            document.getElementById('score_audio').volume = .3;
-
+            // gameContent.removeClass('hidden');                
+            document.getElementById('wait_music').volume = .05;
+            document.getElementById('score_audio').volume = .2;
+            document.getElementById('woosh_audio').volume = .2;
+            document.getElementById('round1_intro').volume = .2;
+            document.getElementById('blip_audio').volume = .2;
+            document.getElementById('blip2_audio').volume = .2;
+            document.getElementById('blip3_audio').volume = .2;
+            document.getElementById('bleep_audio').volume = .2;
         });
 
         const socket = io();
@@ -120,20 +144,18 @@
             socket.emit('messageFromClient', msg);
         });
         $(window).on('unload', () => {
-            const msg = new Message('leaveRoom');
-            msg.playerData = { name: room.myUsername };
-            socket.emit('messageFromClient', msg);
+            const OUT_MSG = new Message('leaveRoom');
+            OUT_MSG.playerData = { name: room.myUsername };
+            socket.emit('messageFromClient', OUT_MSG);
         });
         socket.on('redirect', (data) => {
             console.log(`Redirecting to ${data.url}`);
             window.location.assign(data.url);
         });
-
         // Socket Game Event Listener
         socket.on('messageFromServer', (data) => {
             room.parseMessage(data);
         });
-
         // Cooke stuff
         function setCookie(cname, cvalue) {
             document.cookie = cname + "=" + cvalue + ";";

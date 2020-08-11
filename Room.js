@@ -26,6 +26,7 @@ class Room {
         this.io = io;
         this.ROOM_SIZE = 8;
         this.state = new Lobby(this);
+        this.memes = [];
     }
     getPlayerByName(name) {
         return this.players.find((player) => {
@@ -52,7 +53,8 @@ class Room {
         this.state.parseMessage(data, socket);
     }
     getMeme() {
-        let m_num = Math.floor(12 * Math.random());
+        let m_num = Math.floor(25 * Math.random());
+        this.memes.push(m_num);
         return new Promise((res, rej) => {
             fs.readFile(`./img/${m_num}.jpg`, (err, data) => {
                 res('data:image/png;base64,' + data.toString('base64'));
