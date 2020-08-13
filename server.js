@@ -15,7 +15,6 @@ app.get('/:id', (req, res) => {
     if (rooms.getRoomByID(req.params.id)) {
         res.sendFile(__dirname + '/public/game.html');
     } else {
-        console.log('Redirecting Someone...');
         res.redirect('/');
     }
 });

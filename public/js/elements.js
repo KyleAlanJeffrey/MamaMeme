@@ -49,6 +49,22 @@ class Card {
     }
 }
 class ElementCreate {
+    static resultCard(name) {
+        const player = $('<div>', {
+            'class': 'player'
+        });
+        const card = $('<div>', {
+            'class': 'card',
+            'text': name,
+            'id': name + 'result-card',
+        });
+        const h1 = $('<h1>', {
+            'text': '0',
+        });
+        player.append(card);
+        card.append(h1);
+        return player;
+    }
     static answerCard() {
         return $.parseHTML('<div class="card answer-input slide-in"><textarea name = "" id = "user-answer" cols = "30" rows = "10" placeholder = "Put your funny answer here" ></textarea ><button id="submit-answer-button" class="mbtn submit-answer slide-in" onclick="room.submitAnswer()">SUBMIT</button></div> ');
     }
@@ -101,7 +117,7 @@ class ElementCreate {
         meme.append(img);
         return meme;
     }
-    static roundTitle(number){
+    static roundTitle(number) {
         const title = $.parseHTML(`<div class="round-title"> Round ${number} </div>`);
         return title;
     }

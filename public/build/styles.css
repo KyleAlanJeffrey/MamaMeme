@@ -114,7 +114,7 @@ body {
   width: 100%;
   height: 100%;
   z-index: 100;
-  top: 100%;
+  top: -100%;
   -webkit-transition: all 0.4s;
   transition: all 0.4s;
   display: none;
@@ -148,9 +148,14 @@ body {
 }
 
 #score-overlay .player .card {
+  color: yellow;
   margin: 0;
   margin-top: 15px;
   text-align: center;
+}
+
+#score-overlay .player .card h1 {
+  color: white;
 }
 
 #score-overlay .score-bar {
@@ -570,6 +575,7 @@ body {
   height: 50px;
   background-image: url(../img/vol.png);
   background-size: cover;
+  z-index: 5000;
 }
 
 #mute:hover {

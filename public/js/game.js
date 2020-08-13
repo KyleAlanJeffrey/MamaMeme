@@ -50,6 +50,20 @@ class Player {
     remove() {
         this.card.remove();
     }
+    createAnimateResultCard() {
+        const MAX_HEIGHT = 700;
+        const CARD_ID = '#' + this.name + 'result-card';
+        let i = this.points / 100, score = 0;
+        $('#score-overlay').append(ElementCreate.resultCard(this.name));
+        this.interval = setInterval(() => {
+            if (!i) { clearInterval(this.interval); return; }
+            i--;
+
+            const currentHeight = $(CARD_ID).height();
+            $(CARD_ID).css('height', currentHeight + 65);
+            $(CARD_ID + ' h1').text(score += 100);
+        }, 500);
+    }
 
 }
 
@@ -94,7 +108,7 @@ class Room {
         document.getElementById('wait_music').play();
         $('#round-overlay h1').text(`Round ${this.round}`);
         $('#round-overlay').show().css('left', '0%');
-        setTimeout(() => { 
+        setTimeout(() => {
             $('#round-overlay').css('left', '100%');
             this.$board.append(ElementCreate.roundTitle(this.round));
         }, 5000);
@@ -107,6 +121,15 @@ class Room {
                 setTimeout(() => { player.pointAnimation(); }, t);
                 t += dt;
             }
+        });
+    }
+    displayGameResults() {
+        $('#score-overlay').css('display', 'flex');
+        setTimeout(() => { $('#score-overlay').css('top', '0'); }, 100);
+        let t = 1500, dt = 2000;
+        this.players.forEach(player => {
+            setTimeout(() => { player.createAnimateResultCard(); }, t);
+            t += dt;
         });
     }
     requestStart() {

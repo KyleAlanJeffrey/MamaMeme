@@ -19,7 +19,7 @@ class State {
                 room.removePlayer(IN_MSG.playerData.name);
                 break;
             }
-            case('Start'):{
+            case ('Start'): {
                 this.room.round = IN_MSG.round;
                 break;
             }
@@ -153,15 +153,28 @@ class Score extends State {
                 this.room.state = new Start(this.room);
                 break;
             }
-            case ('Submission'):
+            case ('Submission'): {
                 this.end()
                 this.room.memes.unshift(IN_MSG.img);
                 this.room.state = new Submission(this.room);
                 break;
+            }
+            case ('Results'): {
+                this.end();
+                this.room.state = new Results(this.room);
+                break;
+            }
         }
     }
     end() {
         this.room.clearVotingElements();
+    }
+}
+
+class Results extends State {
+    constructor(room) {
+        super('Results', room);
+        room.displayGameResults();
     }
 
 }

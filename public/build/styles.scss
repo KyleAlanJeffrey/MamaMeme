@@ -90,7 +90,7 @@ body {
     width: 100%;
     height: 100%;
     z-index: 100;
-    top: 100%;
+    top: -100%;
     transition: all 0.4s;
     display: none;
     flex-direction: row;
@@ -105,9 +105,13 @@ body {
         padding: 15px;
         margin: 10px;
         & .card {
+            color: yellow;
             margin: 0;
             margin-top: 15px;
             text-align: center;
+            h1{
+                color: white;
+            }
         }
     }
     & .score-bar {
@@ -374,7 +378,7 @@ body {
 }
 
 // Buttons
-#mute{
+#mute {
     position: fixed;
     left: 97%;
     top: 94%;
@@ -382,7 +386,8 @@ body {
     height: 50px;
     background-image: url(../img/vol.png);
     background-size: cover;
-    &:hover{
+    z-index: 5000;
+    &:hover {
         cursor: pointer;
     }
 }

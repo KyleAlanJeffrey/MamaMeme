@@ -27,7 +27,7 @@ class Room {
         this.ROOM_SIZE = 8;
         this.state = new Lobby(this);
         this.memes = [];
-        this.round = 0;
+        this.round = 7;
     }
     getPlayerByName(name) {
         return this.players.find((player) => {
@@ -35,15 +35,17 @@ class Room {
         });
     }
     addPlayer(username, socket) {
-        let player = new Player(username, socket);
+        const player = new Player(username, socket);
         this.players.push(player);
         if (this.players.length == this.ROOM_SIZE) this.full = true;
         if (this.players.length == 1) player.lead = true;
+
         //Create server message to client
-        let message = new Message('playerJoined');
-        message.playerData = player;
+        const OUT_MSG = new Message('playerJoined');
+        OUT_MSG.playerData = player;
+
         //Send message to clients in room
-        this.io.to(this.id).emit('messageFromServer', message);
+        this.sendGameMessage(OUT_MSG);
     }
     removePlayer(name) {
         this.players = this.players.filter((player) => {
@@ -54,7 +56,10 @@ class Room {
         this.state.parseMessage(data, socket);
     }
     getMeme() {
-        let m_num = Math.floor(25 * Math.random());
+        let m_num = 0;
+        do {
+            m_num = Math.floor(25 * Math.random());
+        } while (this.memes.includes(m_num));
         this.memes.push(m_num);
         return new Promise((res, rej) => {
             fs.readFile(`./img/${m_num}.jpg`, (err, data) => {
@@ -62,8 +67,8 @@ class Room {
             });
         });
     }
-    sendGameMessage(msg) {
-        this.io.to(this.id).emit('messageFromServer', msg);
+    sendGameMessage(OUTGOING_MESSAGE) {
+        this.io.to(this.id).emit('messageFromServer', OUTGOING_MESSAGE);
     }
     resetVotes() {
         this.players.forEach((player) => {
@@ -74,8 +79,6 @@ class Room {
         let votedPlayer = this.getPlayerByName(playerData.vote.name);
         votedPlayer.addVote();
     }
-
-
     static createID() {
         let A = 65;
         let Z = 90;

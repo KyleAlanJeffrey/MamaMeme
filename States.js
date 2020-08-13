@@ -39,7 +39,6 @@ class State {
      * @param {*} Incoming_Message 
      */
     parseMessage(IN_MSG) {
-        console.log(IN_MSG);
         switch (IN_MSG.event) {
             case ('leaveRoom'):
                 this.room.removePlayer(IN_MSG.playerData.name);
@@ -98,9 +97,7 @@ class Start extends State {
     async end() {
         super.end();
         this.room.state = new Submission(this.room);
-        const OUT_MSG = new Message('Submission');
-        OUT_MSG.img = await this.room.getMeme();
-        this.room.state.start(100, OUT_MSG);
+        this.room.state.start();
     }
 }
 class Submission extends State {
@@ -176,6 +173,11 @@ class Score extends State {
     }
     end() {
         super.end();
+        if(this.room.round == 8){
+            this.room.state = new Results(this.room);
+            this.room.state.start();
+            return;
+        }
         this.room.state = new Start(this.room);
         this.room.state.start(5, null);
     }
@@ -185,7 +187,9 @@ class Results extends State{
         super('Results', room);
     }
     start(){
-        super.start(-1, null);
+        const OUT_MSG = new Message('Results');
+        OUT_MSG.playersData = this.room.players;
+        super.start(-1, OUT_MSG);
     }
     parseMessage(IN_MSG){
         
