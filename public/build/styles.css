@@ -562,6 +562,16 @@ body {
   width: 50%;
 }
 
+.content.homepage .dashboard .login-section .login input:invalid,
+.content.homepage .dashboard .info-section .login input:invalid {
+  border: red solid 1px;
+}
+
+.content.homepage .dashboard .login-section .login input:valid,
+.content.homepage .dashboard .info-section .login input:valid {
+  border: green solid 1px;
+}
+
 .content.homepage .dashboard .login-section .login label,
 .content.homepage .dashboard .info-section .login label {
   margin: 0;

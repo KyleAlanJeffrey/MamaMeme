@@ -367,6 +367,12 @@ body {
                     font-size: larger;
                     & input {
                         width: 50%;
+                        &:invalid{
+                            border: red solid 1px;
+                        }
+                        &:valid{
+                            border: green solid 1px;
+                        }
                     }
                     & label {
                         margin: 0;
