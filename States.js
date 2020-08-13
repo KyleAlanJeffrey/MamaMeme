@@ -19,10 +19,11 @@ class State {
      * @param {*} Duration 
      * @param {*} Outgoing_Message 
      */
-    start(duration, msg) {
+    start(duration, OUT_MSG) {
         this.duration = duration
-        if (!msg) msg = new Message(this.state);
-        this.room.sendGameMessage(msg);
+        if (!OUT_MSG) OUT_MSG = new Message(this.state);
+        OUT_MSG.round = this.room.round;
+        this.room.sendGameMessage(OUT_MSG);
         if (duration == -1) return;
 
         this.timerInterval = setInterval(() => {
@@ -90,6 +91,10 @@ class Start extends State {
     constructor(room) {
         super('Start', room);
     }
+    start(duration, OUT_MSG) {
+        this.room.round++;
+        super.start(duration, OUT_MSG);
+    }
     async end() {
         super.end();
         this.room.state = new Submission(this.room);
@@ -141,7 +146,7 @@ class Voting extends State {
     start() {
         const OUT_MSG = new Message('Voting');
         OUT_MSG.playersData = this.room.players;
-        super.start(30, OUT_MSG);
+        super.start(50, OUT_MSG);
     }
     parseMessage(IN_MSG) {
         super.parseMessage(IN_MSG);
@@ -163,16 +168,30 @@ class Score extends State {
     constructor(room) {
         super('Score', room);
     }
-    start(){
+    start() {
         // Get Every player that scored
         const OUT_MSG = new Message('Score');
         OUT_MSG.playersData = this.room.players;
-        super.start(5, OUT_MSG);
+        super.start(10, OUT_MSG);
     }
     end() {
         super.end();
-        this.room.state = new Submission(this.room);
-        this.room.state.start();
+        this.room.state = new Start(this.room);
+        this.room.state.start(5, null);
+    }
+}
+class Results extends State{
+    constructor(room) {
+        super('Results', room);
+    }
+    start(){
+        super.start(-1, null);
+    }
+    parseMessage(IN_MSG){
+        
+    }
+    end(){
+
     }
 }
 module.exports = { State, Lobby, Start, Submission };

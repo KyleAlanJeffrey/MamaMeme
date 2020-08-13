@@ -14,13 +14,16 @@ class State {
     }
     parseMessage(IN_MSG) {
         console.log(IN_MSG);
-        switch(IN_MSG.event){
-            case('playerLeft'):{
+        switch (IN_MSG.event) {
+            case ('playerLeft'): {
                 room.removePlayer(IN_MSG.playerData.name);
                 break;
             }
+            case('Start'):{
+                this.room.round = IN_MSG.round;
+                break;
+            }
         }
-
     }
     startCountdown(duration) {
         this.countdownClock = ElementCreate.countdownClock(duration);
@@ -116,7 +119,7 @@ class Submission extends State {
 class Voting extends State {
     constructor(room) {
         super('Voting', room);
-        super.startCountdown(30);
+        super.startCountdown(50);
         room.loadVotingElements();
     }
     parseMessage(IN_MSG) {
@@ -145,6 +148,11 @@ class Score extends State {
     parseMessage(IN_MSG) {
         super.parseMessage(IN_MSG);
         switch (IN_MSG.event) {
+            case ('Start'): {
+                this.end();
+                this.room.state = new Start(this.room);
+                break;
+            }
             case ('Submission'):
                 this.end()
                 this.room.memes.unshift(IN_MSG.img);

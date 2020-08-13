@@ -44,9 +44,20 @@ body {
   background: white;
   background: -webkit-gradient(linear, left top, right top, color-stop(50%, white), color-stop(50%, #5a007d));
   background: linear-gradient(90deg, white 50%, #5a007d 50%);
+  -webkit-transition: -webkit-transform 0.4s;
+  transition: -webkit-transform 0.4s;
+  transition: transform 0.4s;
+  transition: transform 0.4s, -webkit-transform 0.4s;
+}
+
+.title:hover {
+  cursor: default;
+  -webkit-transform: rotateY(360deg);
+          transform: rotateY(360deg);
 }
 
 .title h1 {
+  cursor: default;
   font-size: 50px;
   margin: 0;
   background: -webkit-gradient(linear, left top, right top, color-stop(52%, #5a007d), color-stop(51%, white));
@@ -178,6 +189,24 @@ body {
   }
 }
 
+@-webkit-keyframes slide-up-3-anim {
+  from {
+    top: 0px;
+  }
+  to {
+    top: -125px;
+  }
+}
+
+@keyframes slide-up-3-anim {
+  from {
+    top: 0px;
+  }
+  to {
+    top: -125px;
+  }
+}
+
 .game-content {
   position: absolute;
   top: 100px;
@@ -187,6 +216,16 @@ body {
   background: -webkit-gradient(linear, left top, right top, color-stop(50%, #5a007d), color-stop(50%, white));
   background: linear-gradient(90deg, #5a007d 50%, white 50%);
   border-radius: 10px;
+}
+
+.game-content .round-title {
+  font-size: 100px;
+  position: absolute;
+  top: -125px;
+  left: 700px;
+  z-index: -1;
+  -webkit-animation: slide-up-3-anim 1s ease-out;
+          animation: slide-up-3-anim 1s ease-out;
 }
 
 .game-content .title {
@@ -232,6 +271,15 @@ body {
   -ms-flex-line-pack: center;
       align-content: center;
   width: 45%;
+  -webkit-transition: -webkit-transform 0.4s;
+  transition: -webkit-transform 0.4s;
+  transition: transform 0.4s;
+  transition: transform 0.4s, -webkit-transform 0.4s;
+}
+
+.game-content .game-display .meme-format-container:hover {
+  -webkit-transform: scale(1.05);
+          transform: scale(1.05);
 }
 
 .game-content .game-display .meme-answer-container {
@@ -362,10 +410,30 @@ body {
       flex-shrink: 0;
   font-family: "Oswald", sans-serif;
   font-weight: 500;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 .card .name {
   color: yellow;
+}
+
+.card textarea {
+  background: inherit;
+  font-family: inherit;
+  color: inherit;
+  outline: none;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  border: none;
+  resize: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  cursor: pointer;
 }
 
 .card.backside {
@@ -382,7 +450,7 @@ body {
 .card.answer-input {
   position: fixed;
   top: 50%;
-  left: 85%;
+  left: calc(100% - 330px);
   -webkit-transform: scale(3);
           transform: scale(3);
   z-index: 1000;
@@ -405,6 +473,7 @@ body {
   -ms-flex-negative: 0;
       flex-shrink: 0;
   position: absolute;
+  background-color: black;
 }
 
 .meme-format img {
@@ -412,6 +481,8 @@ body {
   border: black solid 10px;
   width: 100%;
   height: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
 }
 
 .content {
@@ -489,6 +560,20 @@ body {
 .content.homepage .dashboard .login-section .login label,
 .content.homepage .dashboard .info-section .login label {
   margin: 0;
+}
+
+#mute {
+  position: fixed;
+  left: 97%;
+  top: 94%;
+  width: 50px;
+  height: 50px;
+  background-image: url(../img/vol.png);
+  background-size: cover;
+}
+
+#mute:hover {
+  cursor: pointer;
 }
 
 .mbtn {
@@ -633,25 +718,25 @@ body {
 
 @-webkit-keyframes slide-in-anim {
   0% {
-    left: 110%;
+    left: 130%;
   }
   80% {
-    left: 81%;
+    left: calc(100% - 400px);
   }
   100% {
-    left: 85%;
+    left: calc(100% - 330px);
   }
 }
 
 @keyframes slide-in-anim {
   0% {
-    left: 110%;
+    left: 130%;
   }
   80% {
-    left: 81%;
+    left: calc(100% - 400px);
   }
   100% {
-    left: 85%;
+    left: calc(100% - 330px);
   }
 }
 
@@ -912,7 +997,7 @@ body {
   cursor: pointer;
 }
 
-.reveal-card span {
+.reveal-card textarea {
   -webkit-animation: reveal-card-text-anim 1s;
           animation: reveal-card-text-anim 1s;
 }

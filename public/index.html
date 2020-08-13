@@ -44,8 +44,8 @@
         const socket = io();
         $(document).ready(function () {
             const nickname = getCookie('username');
-            // $('#user-input').val(nickname);
-            $('#user-input').val('Ball Licker ' + Math.floor(200 * Math.random()));
+            $('#user-input').val(nickname);
+            // $('#user-input').val('Ball Licker ' + Math.floor(200 * Math.random()));
             $('.mbtn')
                 .mouseover(() => { document.getElementById('blip_audio').play(); })
                 .mousedown(() => { document.getElementById('blip_audio2').play(); });

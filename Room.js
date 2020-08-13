@@ -27,6 +27,7 @@ class Room {
         this.ROOM_SIZE = 8;
         this.state = new Lobby(this);
         this.memes = [];
+        this.round = 0;
     }
     getPlayerByName(name) {
         return this.players.find((player) => {

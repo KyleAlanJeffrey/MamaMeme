@@ -35,7 +35,7 @@ class Card {
             element.removeClass('backside text-right').on('click', () => { this.clicked() });
             element.children('.name').remove();
         }, 300)
-        element.append(`<span>${this.answer}</span>`);
+        element.append(`<textarea readonly cols="30" rows="10">${this.answer}</textarea>`);
         element.addClass('reveal-card');
 
     }
@@ -100,5 +100,9 @@ class ElementCreate {
         });
         meme.append(img);
         return meme;
+    }
+    static roundTitle(number){
+        const title = $.parseHTML(`<div class="round-title"> Round ${number} </div>`);
+        return title;
     }
 }

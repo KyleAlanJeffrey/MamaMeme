@@ -47,7 +47,7 @@ class Player {
         document.getElementById('score_audio').play();
         setTimeout(() => { this.card.removeClass('scored'); }, 1000);
     }
-    remove(){
+    remove() {
         this.card.remove();
     }
 
@@ -62,6 +62,7 @@ class Room {
         this.$board = $('.game-content');
         this.memes = [];
         this.state = new Lobby(this);
+        this.round = 0;
     }
     addPlayer(name, lead) {
         document.getElementById('blip_audio').play();
@@ -76,10 +77,10 @@ class Room {
             return player.name == name;
         });
     }
-    removePlayer(name){
+    removePlayer(name) {
         const player = this.getPlayerByName(name);
         player.remove();
-        this.players = this.players.filter(player=>{
+        this.players = this.players.filter(player => {
             return player.name != name;
         });
     }
@@ -87,10 +88,16 @@ class Room {
         this.waitPrompt = new WaitPrompt();
     }
     startRoundAnimations() {
-        document.getElementById('round1_intro').play();
+        const roundIntroString = `round${this.round}_intro`;
+        console.log(roundIntroString);
+        document.getElementById(roundIntroString).play();
         document.getElementById('wait_music').play();
-        $('#round-overlay').css('left', '0%');
-        setTimeout(() => { $('#round-overlay').css('left', '100%'); }, 5000);
+        $('#round-overlay h1').text(`Round ${this.round}`);
+        $('#round-overlay').show().css('left', '0%');
+        setTimeout(() => { 
+            $('#round-overlay').css('left', '100%');
+            this.$board.append(ElementCreate.roundTitle(this.round));
+        }, 5000);
     }
     displayRoundScore() {
         let t = 2000, dt = 2000;
@@ -132,7 +139,7 @@ class Room {
         $('.vote-prompt').removeClass('hidden');
     }
     loadVotingElements() {
-        let t = 500, dt = 2000;
+        let t = 2000, dt = 4000;
         this.players.forEach((player) => {
             setTimeout(() => {
                 player.submissionCard.reveal();
@@ -141,10 +148,12 @@ class Room {
         });
     }
     clearVotingElements() {
+        $('.round-title').remove();
         $('.meme-format').remove();
         $('.reveal-card').remove();
         $('.vote-prompt').addClass('hidden');
         $('#answer-input').remove();
+        $('#round-overlay').css('left', '-100%').hide();
     }
     sendServerMessage(OUT_MSG) {
         this.socket.emit('messageFromClient', OUT_MSG);

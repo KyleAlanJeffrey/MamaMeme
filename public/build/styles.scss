@@ -41,8 +41,13 @@ body {
     padding: 5px 10px;
     background: rgb(255, 255, 255);
     background: linear-gradient(90deg, rgba(255, 255, 255, 1) 50%, rgba(90, 0, 125, 1) 50%);
-
+    transition: transform 0.4s;
+    &:hover {
+        cursor: default;
+        transform: rotateY(360deg);
+    }
     h1 {
+        cursor: default;
         font-size: 50px;
         margin: 0;
         background: linear-gradient(90deg, rgba(90, 0, 125, 1) 52%, rgba(255, 255, 255, 1) 51%);
@@ -127,6 +132,14 @@ body {
         content: "Waiting on host..";
     }
 }
+@keyframes slide-up-3-anim {
+    from {
+        top: 0px;
+    }
+    to {
+        top: -125px;
+    }
+}
 .game-content {
     position: absolute;
     top: 100px;
@@ -135,7 +148,14 @@ body {
     padding: 20px;
     background: linear-gradient(90deg, rgba(90, 0, 125, 1) 50%, rgba(255, 255, 255, 1) 50%);
     border-radius: 10px;
-
+    & .round-title {
+        font-size: 100px;
+        position: absolute;
+        top: -125px;
+        left: 700px;
+        z-index: -1;
+        animation: slide-up-3-anim 1s ease-out;
+    }
     & .title {
         width: 180px;
         & h1 {
@@ -162,6 +182,10 @@ body {
             justify-content: center;
             align-content: center;
             width: 45%;
+            transition: transform 0.4s;
+            &:hover {
+                transform: scale(1.05);
+            }
         }
         & .meme-answer-container {
             display: flex;
@@ -248,8 +272,20 @@ body {
     flex-shrink: 0;
     font-family: "Oswald", sans-serif;
     font-weight: 500;
+    user-select: none;
     & .name {
         color: yellow;
+    }
+    textarea {
+        background: inherit;
+        font-family: inherit;
+        color: inherit;
+        outline: none;
+        box-shadow: none;
+        border: none;
+        resize: none;
+        user-select: none;
+        cursor: pointer;
     }
     &.backside {
         background-image: url("../img/logo.png");
@@ -263,7 +299,7 @@ body {
     &.answer-input {
         position: fixed;
         top: 50%;
-        left: 85%;
+        left: calc(100% - 330px);
         transform: scale(3);
         z-index: 1000;
         & textarea {
@@ -282,12 +318,13 @@ body {
     height: 550px;
     flex-shrink: 0;
     position: absolute;
-
+    background-color: black;
     & img {
         border-radius: 10px;
         border: black solid 10px;
         width: 100%;
         height: 100%;
+        object-fit: contain;
     }
 }
 
@@ -337,6 +374,18 @@ body {
 }
 
 // Buttons
+#mute{
+    position: fixed;
+    left: 97%;
+    top: 94%;
+    width: 50px;
+    height: 50px;
+    background-image: url(../img/vol.png);
+    background-size: cover;
+    &:hover{
+        cursor: pointer;
+    }
+}
 .mbtn {
     text-transform: uppercase;
     margin: 3px;
@@ -374,6 +423,7 @@ body {
 }
 
 // ?Animations
+
 @keyframes pop-up-anim {
     0% {
         top: 0;
@@ -418,13 +468,13 @@ body {
 }
 @keyframes slide-in-anim {
     0% {
-        left: 110%;
+        left: 130%;
     }
     80% {
-        left: 81%;
+        left: calc(100% - 400px);
     }
     100% {
-        left: 85%;
+        left: calc(100% - 330px);
     }
 }
 @keyframes flip-anim-180 {
@@ -484,20 +534,20 @@ body {
         transform: rotateZ(-5deg);
     }
 }
-@keyframes shake-2-anim{
-    0%{
+@keyframes shake-2-anim {
+    0% {
         transform: rotateZ(0deg);
     }
-    25%{
+    25% {
         transform: rotateZ(8deg);
     }
-    50%{
+    50% {
         transform: rotateZ(0deg);
     }
-    75%{
+    75% {
         transform: rotateZ(-8deg);
     }
-    100%{
+    100% {
         transform: rotateZ(0deg);
     }
 }
@@ -536,7 +586,7 @@ body {
 .reveal-card {
     animation: reveal-card-anim 1s;
     cursor: pointer;
-    & span {
+    textarea {
         animation: reveal-card-text-anim 1s;
     }
     &:hover {
