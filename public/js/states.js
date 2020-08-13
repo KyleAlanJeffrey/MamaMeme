@@ -120,6 +120,7 @@ class Voting extends State {
     constructor(room) {
         super('Voting', room);
         super.startCountdown(50);
+        this.voted = false;
         room.loadVotingElements();
     }
     parseMessage(IN_MSG) {

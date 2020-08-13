@@ -39,6 +39,7 @@ class State {
      * @param {*} Incoming_Message 
      */
     parseMessage(IN_MSG) {
+        console.log(IN_MSG);
         switch (IN_MSG.event) {
             case ('leaveRoom'):
                 this.room.removePlayer(IN_MSG.playerData.name);

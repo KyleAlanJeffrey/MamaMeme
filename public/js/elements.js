@@ -41,6 +41,8 @@ class Card {
     }
     clicked() {
         // if (this.player == this.room.myPlayer) return; //No Voting for self
+        if (this.room.state.voted) return;
+        this.room.state.voted = true;
         this.clickable = false;
         this.room.myPlayer.vote = { name: this.player.name };
         this.element.addClass('glow');
