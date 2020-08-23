@@ -1,15 +1,18 @@
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mama Meme - The Meme Party Game</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="build/styles.css">
-</head>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="build/styles.css" />
+  </head>
 
-<body class="d-flex justify-content-center hide-overflow" style="flex-shrink: 0;user-select: none;">
+  <body class="d-flex justify-content-center hide-overflow" style="flex-shrink: 0; user-select: none;">
     <!-- Sounds -->
     <audio repeat id="wait_music" src="./audio/music.mp3" type="audio/mpeg"></audio>
     <audio repeat id="round1_intro" src="./audio/round1_intro.mp3" type="audio/mp3"></audio>
@@ -29,117 +32,131 @@
     <audio id="bleep_audio" src="./audio/bleep.wav" type="audio/wav"></audio>
 
     <!-- Overlay -->
-    <div id="score-overlay">
-    </div>
+    <div id="score-overlay"></div>
     <div id="round-overlay">
-        <h1>Round One</h1>
-        <h2>Votes are worth 100 points!</h2>
+      <h1>Round One</h1>
+      <h2>Votes are worth 100 points!</h2>
     </div>
     <!-- Main Game Content -->
     <div class="game-content hidden">
-        <div class="d-flex justify-content-center">
-            <div class="title">
-                <h1>MAMA MEME</h1>
-            </div>
+      <div class="d-flex justify-content-center">
+        <div class="title">
+          <h1>MAMA MEME</h1>
         </div>
-        <div class="game-display">
-            <div class="meme-format-container"> </div>
-            <div class="meme-answer-container">
-                <div class="vote-prompt hidden">Click to Vote on the Funniest!</div>
-                <!-- Example Cards -->
-                <!-- <div class="card reveal-card"><span>bleh</span></div>
+      </div>
+      <div class="game-display">
+        <div class="meme-format-container"></div>
+        <div class="meme-answer-container">
+          <div class="vote-prompt hidden">Click to Vote on the Funniest!</div>
+          <!-- Example Cards -->
+          <!-- <div class="card reveal-card"><span>bleh</span></div>
                 <div class="card reveal-card"><span></span></div>
                 <div class="card reveal-card"><span></span></div>
                 <div class="card reveal-card"><span></span></div>
                 <div class="card reveal-card"><span></span></div>
                 <div class="card reveal-card"><span></span></div> -->
-            </div>
         </div>
+      </div>
     </div>
     <div class="players"></div>
-    <div id="mute"> </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
-        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
+    <div id="mute"></div>
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.js"
+      integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="./js/states.js"></script>
     <script src="./js/game.js"></script>
     <script src="./js/elements.js"></script>
 
-
     <script>
-        const cssVariables = document.documentElement.style
-        document.muted = false;
+      const cssVariables = document.documentElement.style;
+      document.muted = false;
 
-        $(document).ready(function () {
-            // Animating rotating page entry
-            cssVariables.setProperty('--page-content-offset', $('.game-content').offset().left);
-            $('.game-content').removeClass('hidden').addClass('new-page');
-            setTimeout(() => { $('body').removeClass('hide-overflow'); }, 1000);
-            // gameContent.removeClass('hidden');
+      $(document).ready(function () {
+        // Animating rotating page entry
+        cssVariables.setProperty("--page-content-offset", $(".game-content").offset().left);
+        $(".game-content").removeClass("hidden").addClass("new-page");
+        setTimeout(() => {
+          $("body").removeClass("hide-overflow");
+        }, 1000);
+        // gameContent.removeClass('hidden');
 
-            // Mute Button
-            $('#mute').mousedown(() => {
-                document.muted = !document.muted;
-                if (document.muted) { $('#mute').css('background-image', 'url(../img/mute.png)'); }
-                else { $('#mute').css('background-image', 'url(../img/vol.png)'); }
-                document.querySelectorAll('audio').forEach((elem) => {
-                    if (document.muted) { elem.volume = 0; }
-                    else { elem.volume = .2; }
-                });
-            });
-
-            // Sound Volume Settings
-            document.getElementById('wait_music').volume = .05;
-            document.querySelectorAll('audio').forEach((elem) => { elem.volume = .2; });
-        });
-
-        const socket = io();
-        const room = new Room(socket);
-
-        socket.on('connect', () => {
-            const msg = new Message('joinedServer');
-            msg.playerData = { 'name': room.myUsername };
-            socket.emit('messageFromClient', msg);
-        });
-        $(window).on('unload', () => {
-            const OUT_MSG = new Message('leaveRoom');
-            OUT_MSG.playerData = { name: room.myUsername };
-            socket.emit('messageFromClient', OUT_MSG);
-        });
-        socket.on('redirect', (data) => {
-            console.log(`Redirecting to ${data.url}`);
-            window.location.assign(data.url);
-        });
-        // Socket Game Event Listener
-        socket.on('messageFromServer', (data) => {
-            room.parseMessage(data);
-        });
-        // Cooke stuff
-        function setCookie(cname, cvalue) {
-            document.cookie = cname + "=" + cvalue + ";";
-        }
-        function getCookie(cname) {
-            var name = cname + "=";
-            var decodedCookie = decodeURIComponent(document.cookie);
-            var ca = decodedCookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
-                }
+        // Mute Button
+        $("#mute").mousedown(() => {
+          document.muted = !document.muted;
+          if (document.muted) {
+            $("#mute").css("background-image", "url(../img/mute.png)");
+          } else {
+            $("#mute").css("background-image", "url(../img/vol.png)");
+          }
+          document.querySelectorAll("audio").forEach((elem) => {
+            if (document.muted) {
+              elem.volume = 0;
+            } else {
+              elem.volume = 0.2;
             }
-            return "";
-        }
-    </script>
-</body>
+          });
+        });
 
+        // Sound Volume Settings
+        document.getElementById("wait_music").volume = 0.05;
+        document.querySelectorAll("audio").forEach((elem) => {
+          elem.volume = 0.2;
+        });
+      });
+
+      const socket = io();
+      const room = new Room(socket);
+
+      socket.on("connect", () => {
+        const msg = new Message("joinedServer");
+        msg.playerData = { name: room.myUsername };
+        socket.emit("messageFromClient", msg);
+      });
+      $(window).on("unload", () => {
+        const OUT_MSG = new Message("leaveRoom");
+        OUT_MSG.playerData = { name: room.myUsername };
+        socket.emit("messageFromClient", OUT_MSG);
+      });
+      socket.on("redirect", (data) => {
+        console.log(`Redirecting to ${data.url}`);
+        window.location.assign(data.url);
+      });
+      // Socket Game Event Listener
+      socket.on("messageFromServer", (data) => {
+        room.parseMessage(data);
+      });
+      // Cooke stuff
+      function setCookie(cname, cvalue) {
+        document.cookie = cname + "=" + cvalue + ";";
+      }
+      function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(";");
+        for (var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == " ") {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
+        }
+        return "";
+      }
+    </script>
+  </body>
 </html>
