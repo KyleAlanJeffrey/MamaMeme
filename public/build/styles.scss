@@ -93,35 +93,43 @@ body {
     top: -100%;
     transition: all 0.4s;
     display: none;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    & .player {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        width: 180px;
-        height: 600px;
-        padding: 15px;
-        margin: 10px;
-        & .card {
-            color: yellow;
-            margin: 0;
-            margin-top: 15px;
-            text-align: center;
-            h1{
-                color: white;
+    // display: block;
+    // flex-direction: row;
+    // justify-content: center;
+    // align-items: center;
+    #play-again-button {
+        width: 250px;
+        height: 100px;
+        font-size: 30px;
+    }
+    .scores {
+        & .player {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            width: 180px;
+            height: 600px;
+            padding: 15px;
+            margin: 10px;
+            & .card {
+                color: yellow;
+                margin: 0;
+                margin-top: 15px;
+                text-align: center;
+                h1 {
+                    color: white;
+                }
             }
         }
-    }
-    & .score-bar {
-        height: 300px;
-        border: black solid 4px;
-        & .points {
-            position: relative;
-            top: 150;
-            height: 150px;
-            background-color: gold;
+        & .score-bar {
+            height: 300px;
+            border: black solid 4px;
+            & .points {
+                position: relative;
+                top: 150;
+                height: 150px;
+                background-color: gold;
+            }
         }
     }
 }
@@ -367,10 +375,10 @@ body {
                     font-size: larger;
                     & input {
                         width: 50%;
-                        &:invalid{
+                        &:invalid {
                             border: red solid 1px;
                         }
-                        &:valid{
+                        &:valid {
                             border: green solid 1px;
                         }
                     }

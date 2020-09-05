@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="build/styles.css" />
   </head>
 
-  <body class="d-flex justify-content-center hide-overflow" style="flex-shrink: 0; user-select: none;">
+  <body class="d-flex justify-content-center hide-overflow" style="flex-shrink: 0; user-select: none">
     <!-- Sounds -->
     <audio repeat id="wait_music" src="./audio/music.mp3" type="audio/mpeg"></audio>
     <audio repeat id="round1_intro" src="./audio/round1_intro.mp3" type="audio/mp3"></audio>
@@ -32,7 +32,17 @@
     <audio id="bleep_audio" src="./audio/bleep.wav" type="audio/wav"></audio>
 
     <!-- Overlay -->
-    <div id="score-overlay"></div>
+    <!-- <div id="score-overlay"></div> -->
+
+    <div id="score-overlay">
+      <div class="container">
+        <div class="row scores" style="flex-wrap: nowrap; justify-content: center"></div>
+        <div class="row" style="justify-content: center; margin-top: 50px">
+          <button id="play-again-button" class="btn btn-lg btn-warning" onclick="room.requestPlayAgain()">Vote to Play Again</button>
+        </div>
+      </div>
+    </div>
+
     <div id="round-overlay">
       <h1>Round One</h1>
       <h2>Votes are worth 100 points!</h2>
@@ -92,7 +102,7 @@
           $("body").removeClass("hide-overflow");
         }, 1000);
         // gameContent.removeClass('hidden');
-
+        removeCookie("roomExt");
         // Mute Button
         $("#mute").mousedown(() => {
           document.muted = !document.muted;
@@ -132,15 +142,23 @@
       });
       socket.on("redirect", (data) => {
         console.log(`Redirecting to ${data.url}`);
+        if (data.roomExt) setCookie("mama_meme_roomExt", data.roomExt);
+        else removeCookie("mama_meme_roomExt");
         window.location.assign(data.url);
       });
       // Socket Game Event Listener
       socket.on("messageFromServer", (data) => {
         room.parseMessage(data);
       });
-      // Cooke stuff
+      // Cookie stuff
       function setCookie(cname, cvalue) {
         document.cookie = cname + "=" + cvalue + ";";
+      }
+      function removeCookie(cname) {
+        var d = new Date();
+        d.setTime(d.getTime() + 0);
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + " " + ";" + expires + ";path=/";
       }
       function getCookie(cname) {
         var name = cname + "=";

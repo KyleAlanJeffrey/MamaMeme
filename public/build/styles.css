@@ -118,19 +118,15 @@ body {
   -webkit-transition: all 0.4s;
   transition: all 0.4s;
   display: none;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
 }
 
-#score-overlay .player {
+#score-overlay #play-again-button {
+  width: 250px;
+  height: 100px;
+  font-size: 30px;
+}
+
+#score-overlay .scores .player {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -147,23 +143,23 @@ body {
   margin: 10px;
 }
 
-#score-overlay .player .card {
+#score-overlay .scores .player .card {
   color: yellow;
   margin: 0;
   margin-top: 15px;
   text-align: center;
 }
 
-#score-overlay .player .card h1 {
+#score-overlay .scores .player .card h1 {
   color: white;
 }
 
-#score-overlay .score-bar {
+#score-overlay .scores .score-bar {
   height: 300px;
   border: black solid 4px;
 }
 
-#score-overlay .score-bar .points {
+#score-overlay .scores .score-bar .points {
   position: relative;
   top: 150;
   height: 150px;
