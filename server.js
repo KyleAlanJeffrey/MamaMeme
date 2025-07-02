@@ -6,8 +6,8 @@ const fs = require('fs');
 
 const { Room, RoomsArray } = require('./Room');
 
-const PORT = process.env.PORT || 3000;
-const homeURL = 'http://localhost:3000/';
+const PORT = process.env.PORT || 8001;
+const homeURL = `http://localhost:${PORT}/`;
 
 // Http Server Stuff
 app.use(express.static('public'));
